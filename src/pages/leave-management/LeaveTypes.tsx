@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -16,8 +15,25 @@ const initialLeaveTypes = [
 export function LeaveTypes() {
   const [leaveTypes, setLeaveTypes] = useState(initialLeaveTypes);
 
-  const handleAddLeaveType = (newType: typeof initialLeaveTypes[0]) => {
-    setLeaveTypes((prev) => [...prev, newType]);
+  const handleAddLeaveType = (newType: {
+    name?: string;
+    maxDays?: number;
+    accrual?: "Monthly" | "Yearly";
+    carryForward?: boolean;
+    encashment?: boolean;
+  }) => {
+    if (newType.name && typeof newType.maxDays === "number" && newType.accrual) {
+      setLeaveTypes((prev) => [
+        ...prev,
+        {
+          name: newType.name,
+          maxDays: newType.maxDays,
+          accrual: newType.accrual,
+          carryForward: !!newType.carryForward,
+          encashment: !!newType.encashment,
+        },
+      ]);
+    }
   };
 
   return (
