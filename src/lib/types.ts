@@ -1,7 +1,7 @@
 
 export type Employee = {
   id: string;
-  name: string;
+  name?: string;
   email: string;
   phone?: string;
   avatar?: string;

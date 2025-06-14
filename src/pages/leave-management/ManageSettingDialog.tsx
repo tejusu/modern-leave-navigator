@@ -8,6 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DefineWorkingDaysForm } from "./settings-forms/DefineWorkingDaysForm";
+import { SetWorkingHoursForm } from "./settings-forms/SetWorkingHoursForm";
+import { ConfigureShiftsForm } from "./settings-forms/ConfigureShiftsForm";
 
 export interface SettingDetail {
   group: { title: string };
@@ -19,30 +22,51 @@ interface ManageSettingDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const settingForms: Record<string, React.FC<{ onSave: () => void }>> = {
+  "Define Working Days": DefineWorkingDaysForm,
+  "Set Working Hours": SetWorkingHoursForm,
+  "Configure Shifts": ConfigureShiftsForm,
+};
+
 export function ManageSettingDialog({ setting, onOpenChange }: ManageSettingDialogProps) {
   if (!setting) {
     return null;
   }
 
+  const FormComponent = settingForms[setting.item.name];
+  const formId = setting.item.name.toLowerCase().replace(/\s+/g, '-') + '-form';
+
+  const handleSave = () => {
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={!!setting} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-xl md:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{setting.item.name}</DialogTitle>
           <DialogDescription>
-            Part of "{setting.group.title}"
+            Part of "{setting.group.title}". {setting.item.description}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <p className="text-sm text-muted-foreground">
-            Configuration options for this setting will be displayed here.
-          </p>
+          {FormComponent ? (
+            <FormComponent onSave={handleSave} />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Configuration options for this setting will be displayed here.
+            </p>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Close
           </Button>
-          <Button>Save Changes</Button>
+          {FormComponent && (
+            <Button type="submit" form={formId}>
+              Save Changes
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
