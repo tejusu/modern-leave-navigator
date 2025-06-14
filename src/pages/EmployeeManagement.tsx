@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import {
   Table,
@@ -39,6 +38,7 @@ const initialEmployees: Employee[] = [
     role: "UI/UX Designer",
     status: "Active",
     joiningDate: "2023-05-15",
+    employmentType: "Full-time",
   },
   {
     id: "EMP002",
@@ -49,6 +49,7 @@ const initialEmployees: Employee[] = [
     role: "Backend Developer",
     status: "Active",
     joiningDate: "2022-11-20",
+    employmentType: "Full-time",
   },
   {
     id: "EMP003",
@@ -59,6 +60,7 @@ const initialEmployees: Employee[] = [
     role: "HR Manager",
     status: "Active",
     joiningDate: "2024-01-10",
+    employmentType: "Full-time",
   },
   {
     id: "EMP004",
@@ -69,6 +71,7 @@ const initialEmployees: Employee[] = [
     role: "Content Strategist",
     status: "On Leave",
     joiningDate: "2023-08-22",
+    employmentType: "Full-time",
   },
     {
     id: "EMP005",
@@ -79,6 +82,7 @@ const initialEmployees: Employee[] = [
     role: "Frontend Developer",
     status: "Active",
     joiningDate: "2023-03-12",
+    employmentType: "Full-time",
   },
   {
     id: "EMP006",
@@ -89,6 +93,7 @@ const initialEmployees: Employee[] = [
     role: "Sales Executive",
     status: "Deactivated",
     joiningDate: "2021-07-01",
+    employmentType: "Contractor",
   },
 ];
 
@@ -102,11 +107,10 @@ const EmployeeManagement = () => {
   const [isProfileSheetOpen, setProfileSheetOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
-  const handleAddEmployee = (newEmployeeData: Pick<Employee, 'name' | 'email' | 'department' | 'role'>) => {
+  const handleAddEmployee = (newEmployeeData: Omit<Employee, "id" | "status" | "avatar">) => {
     const newEmployee: Employee = {
       id: `EMP${String(employees.length + 1).padStart(3, '0')}`,
       ...newEmployeeData,
-      joiningDate: new Date().toISOString().split("T")[0],
       status: "Active",
       avatar: "/placeholder.svg",
     };

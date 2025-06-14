@@ -1,12 +1,20 @@
+
 export type Employee = {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   avatar?: string;
   department: string;
   role: string;
   status: "Active" | "On Leave" | "Deactivated";
   joiningDate: string;
+  reportingManager?: string;
+  workLocation?: string;
+  employmentType?: "Full-time" | "Part-time" | "Contractor";
+  gender?: "Male" | "Female" | "Other";
+  dateOfBirth?: string;
+  address?: string;
 };
 
 export type LeaveApplication = {

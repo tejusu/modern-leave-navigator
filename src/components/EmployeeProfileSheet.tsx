@@ -16,12 +16,22 @@ type EmployeeProfileSheetProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+const ProfileDetail = ({ label, value }: { label: string, value?: string | React.ReactNode }) => {
+  if (!value) return null;
+  return (
+    <div>
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="font-medium">{value}</p>
+    </div>
+  );
+};
+
 export function EmployeeProfileSheet({ employee, open, onOpenChange }: EmployeeProfileSheetProps) {
   if (!employee) return null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-lg">
+      <SheetContent className="sm:max-w-lg w-full overflow-y-auto">
         <SheetHeader className="text-left">
           <SheetTitle>Employee Profile</SheetTitle>
           <SheetDescription>
@@ -37,37 +47,40 @@ export function EmployeeProfileSheet({ employee, open, onOpenChange }: EmployeeP
             <div>
               <h2 className="text-xl font-bold">{employee.name}</h2>
               <p className="text-muted-foreground">{employee.email}</p>
+              <p className="text-sm text-muted-foreground">{employee.phone}</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">Employee ID</p>
-              <p className="font-medium">{employee.id}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Status</p>
-              <p>
+          
+          <div className="space-y-4">
+            <h3 className="text-md font-medium border-b pb-2">Job Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <ProfileDetail label="Employee ID" value={employee.id} />
+               <ProfileDetail label="Status" value={
                 <Badge variant={
                   employee.status === "Active" ? "default" :
                   employee.status === "On Leave" ? "secondary" : "destructive"
                 }>
                   {employee.status}
                 </Badge>
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Department</p>
-              <p className="font-medium">{employee.department}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Role</p>
-              <p className="font-medium">{employee.role}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Joining Date</p>
-              <p className="font-medium">{new Date(employee.joiningDate).toLocaleDateString()}</p>
+              } />
+              <ProfileDetail label="Department" value={employee.department} />
+              <ProfileDetail label="Role" value={employee.role} />
+              <ProfileDetail label="Joining Date" value={new Date(employee.joiningDate).toLocaleDateString()} />
+              <ProfileDetail label="Employment Type" value={employee.employmentType} />
+              <ProfileDetail label="Reporting Manager" value={employee.reportingManager} />
+              <ProfileDetail label="Work Location" value={employee.workLocation} />
             </div>
           </div>
+          
+          <div className="space-y-4">
+            <h3 className="text-md font-medium border-b pb-2">Personal Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <ProfileDetail label="Date of Birth" value={employee.dateOfBirth ? new Date(employee.dateOfBirth).toLocaleDateString() : undefined} />
+              <ProfileDetail label="Gender" value={employee.gender} />
+              <ProfileDetail label="Address" value={employee.address} />
+            </div>
+          </div>
+
         </div>
       </SheetContent>
     </Sheet>

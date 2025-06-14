@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -16,10 +15,8 @@ import {
   BarChart2,
   Bell,
   Settings,
-  LogOut,
   Atom,
 } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
@@ -66,17 +63,6 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-
-        <div className="border-t border-sidebar-border pt-4 mt-4 flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-                <AvatarFallback>AU</AvatarFallback>
-            </Avatar>
-            <div className="flex-grow">
-                <p className="font-semibold text-sidebar-primary">Admin User</p>
-                <p className="text-xs text-sidebar-foreground">admin@leaveflow.com</p>
-            </div>
-            <LogOut className="w-5 h-5 text-sidebar-foreground hover:text-sidebar-primary cursor-pointer" />
-        </div>
       </SidebarFooter>
     </Sidebar>
   );
