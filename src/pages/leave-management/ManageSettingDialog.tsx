@@ -18,6 +18,9 @@ import { MonthlyAccrualRulesForm } from "./settings-forms/MonthlyAccrualRulesFor
 import { EmployeeCategorySettingsForm } from "./settings-forms/EmployeeCategorySettingsForm";
 import { ProrationLogicForm } from "./settings-forms/ProrationLogicForm";
 import { UpdateCalendarForm } from "./settings-forms/UpdateCalendarForm";
+import { EmailTemplatesForm } from "./settings-forms/EmailTemplatesForm";
+import { ApprovalWorkflowsForm } from "./settings-forms/ApprovalWorkflowsForm";
+import { ReminderConfigurationsForm } from "./settings-forms/ReminderConfigurationsForm";
 
 
 export interface SettingDetail {
@@ -41,6 +44,9 @@ const settingForms: Record<string, React.FC<{ onSave: () => void }>> = {
   "Employee Category Settings": EmployeeCategorySettingsForm,
   "Proration Logic": ProrationLogicForm,
   "Update Calendar": UpdateCalendarForm,
+  "Email Templates": EmailTemplatesForm,
+  "Approval Workflows": ApprovalWorkflowsForm,
+  "Reminder Configurations": ReminderConfigurationsForm,
 };
 
 export function ManageSettingDialog({ setting, onOpenChange }: ManageSettingDialogProps) {
