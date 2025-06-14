@@ -1,17 +1,25 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { AddLeaveTypeDialog } from "./AddLeaveTypeDialog";
 
-const leaveTypes = [
+const initialLeaveTypes = [
   { name: "Casual Leave", maxDays: 12, accrual: "Monthly", carryForward: true, encashment: false },
   { name: "Sick Leave", maxDays: 10, accrual: "Yearly", carryForward: false, encashment: false },
   { name: "Earned Leave", maxDays: 20, accrual: "Monthly", carryForward: true, encashment: true },
 ];
 
 export function LeaveTypes() {
+  const [leaveTypes, setLeaveTypes] = useState(initialLeaveTypes);
+
+  const handleAddLeaveType = (newType: typeof initialLeaveTypes[0]) => {
+    setLeaveTypes((prev) => [...prev, newType]);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -20,10 +28,7 @@ export function LeaveTypes() {
             <CardTitle>Leave Types</CardTitle>
             <CardDescription>Define and manage different types of leave available to employees.</CardDescription>
           </div>
-          <Button>
-            <PlusCircle />
-            Add Leave Type
-          </Button>
+          <AddLeaveTypeDialog onSave={handleAddLeaveType} />
         </div>
       </CardHeader>
       <CardContent>

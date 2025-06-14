@@ -1,7 +1,8 @@
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Settings, Calendar, SlidersHorizontal, Bell } from "lucide-react";
+import { ManageSettingDialog, SettingDetail } from "./ManageSettingDialog";
 
 const settingsGroups = [
   {
@@ -48,34 +49,50 @@ const settingsGroups = [
 ];
 
 export function LeaveSettings() {
+  const [selectedSetting, setSelectedSetting] = useState<SettingDetail | null>(null);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {settingsGroups.map((group) => (
-        <Card key={group.title}>
-          <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-            <group.icon className="w-8 h-8 text-primary" />
-            <div className="flex-1">
-              <CardTitle>{group.title}</CardTitle>
-              <CardDescription>{group.description}</CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-3">
-              {group.items.map((item) => (
-                <li key={item.name} className="flex items-center justify-between p-3 border rounded-lg bg-background/50">
-                  <div>
-                    <h4 className="font-medium">{item.name}</h4>
-                    <p className="text-sm text-muted-foreground">{item.description}</p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Manage
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {settingsGroups.map((group) => (
+          <Card key={group.title}>
+            <CardHeader className="flex flex-row items-start gap-4 space-y-0">
+              <group.icon className="w-8 h-8 text-primary" />
+              <div className="flex-1">
+                <CardTitle>{group.title}</CardTitle>
+                <CardDescription>{group.description}</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3">
+                {group.items.map((item) => (
+                  <li key={item.name} className="flex items-center justify-between p-3 border rounded-lg bg-background/50">
+                    <div>
+                      <h4 className="font-medium">{item.name}</h4>
+                      <p className="text-sm text-muted-foreground">{item.description}</p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedSetting({ group: { title: group.title }, item })}
+                    >
+                      Manage
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <ManageSettingDialog
+        setting={selectedSetting}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setSelectedSetting(null);
+          }
+        }}
+      />
+    </>
   );
 }
