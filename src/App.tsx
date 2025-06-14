@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import EmployeeManagement from "./pages/EmployeeManagement";
+import LeaveManagement from "./pages/LeaveManagement";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
@@ -37,6 +38,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/employee-management" element={<EmployeeManagement />} />
+                  <Route path="/leave-management" element={<LeaveManagement />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
