@@ -6,7 +6,7 @@ export type Employee = {
   phone?: string;
   avatar?: string;
   department: string;
-  role: string;
+  role?: string;
   status: "Active" | "On Leave" | "Deactivated";
   joiningDate: string;
   reportingManager?: string;

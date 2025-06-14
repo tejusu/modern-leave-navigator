@@ -11,6 +11,10 @@ import {
 import { DefineWorkingDaysForm } from "./settings-forms/DefineWorkingDaysForm";
 import { SetWorkingHoursForm } from "./settings-forms/SetWorkingHoursForm";
 import { ConfigureShiftsForm } from "./settings-forms/ConfigureShiftsForm";
+import { SetFiscalYearStartForm } from "./settings-forms/SetFiscalYearStartForm";
+import { DefineLeaveYearCycleForm } from "./settings-forms/DefineLeaveYearCycleForm";
+import { ConfigureYearEndProcessingForm } from "./settings-forms/ConfigureYearEndProcessingForm";
+
 
 export interface SettingDetail {
   group: { title: string };
@@ -26,6 +30,9 @@ const settingForms: Record<string, React.FC<{ onSave: () => void }>> = {
   "Define Working Days": DefineWorkingDaysForm,
   "Set Working Hours": SetWorkingHoursForm,
   "Configure Shifts": ConfigureShiftsForm,
+  "Set Fiscal Year Start": SetFiscalYearStartForm,
+  "Define Leave Year Cycle": DefineLeaveYearCycleForm,
+  "Configure Year-end Processing": ConfigureYearEndProcessingForm,
 };
 
 export function ManageSettingDialog({ setting, onOpenChange }: ManageSettingDialogProps) {
