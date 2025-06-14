@@ -10,21 +10,24 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  Send,
-  History,
-  CalendarDays,
+  Users,
+  ClipboardList,
+  CalendarCheck,
+  BarChart2,
+  Bell,
   Settings,
-  UserCircle,
   LogOut,
   Atom,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "#" },
-  { icon: Send, label: "Apply for Leave", href: "#" },
-  { icon: History, label: "Leave History", href: "#" },
-  { icon: CalendarDays, label: "Team Calendar", href: "#" },
+  { icon: Users, label: "Employee Management", href: "#" },
+  { icon: ClipboardList, label: "Leave Management", href: "#" },
+  { icon: CalendarCheck, label: "Holiday Management", href: "#" },
+  { icon: BarChart2, label: "Reports & Analytics", href: "#" },
+  { icon: Bell, label: "Notifications & Alerts", href: "#" },
 ];
 
 const settingsItem = { icon: Settings, label: "Settings", href: "#" };
@@ -66,12 +69,11 @@ export function AppSidebar() {
 
         <div className="border-t border-sidebar-border pt-4 mt-4 flex items-center gap-3">
             <Avatar className="h-10 w-10">
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback>AU</AvatarFallback>
             </Avatar>
             <div className="flex-grow">
-                <p className="font-semibold text-sidebar-primary">Alex Turner</p>
-                <p className="text-xs text-sidebar-foreground">alex.t@example.com</p>
+                <p className="font-semibold text-sidebar-primary">Admin User</p>
+                <p className="text-xs text-sidebar-foreground">admin@leaveflow.com</p>
             </div>
             <LogOut className="w-5 h-5 text-sidebar-foreground hover:text-sidebar-primary cursor-pointer" />
         </div>
