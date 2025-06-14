@@ -5,7 +5,7 @@ export type Employee = {
   email?: string;
   phone?: string;
   avatar?: string;
-  department: string;
+  department?: string;
   role?: string;
   status: "Active" | "On Leave" | "Deactivated";
   joiningDate: string;

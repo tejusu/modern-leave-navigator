@@ -16,7 +16,7 @@ import { DefineLeaveYearCycleForm } from "./settings-forms/DefineLeaveYearCycleF
 import { ConfigureYearEndProcessingForm } from "./settings-forms/ConfigureYearEndProcessingForm";
 import { MonthlyAccrualRulesForm } from "./settings-forms/MonthlyAccrualRulesForm";
 import { EmployeeCategorySettingsForm } from "./settings-forms/EmployeeCategorySettingsForm";
-import { ProrationLogicForm } from "./settings-forms/PorationLogicForm";
+import { ProrationLogicForm } from "./settings-forms/ProrationLogicForm";
 import { UpdateCalendarForm } from "./settings-forms/UpdateCalendarForm";
 
 
