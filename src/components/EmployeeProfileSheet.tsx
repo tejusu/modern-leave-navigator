@@ -1,19 +1,23 @@
-
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
+  SheetFooter,
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Employee } from "@/lib/types";
+import { Button } from "./ui/button";
+import { Edit, Trash } from "lucide-react";
 
 type EmployeeProfileSheetProps = {
   employee: Employee | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onEdit: (employee: Employee) => void;
+  onDelete: (employee: Employee) => void;
 };
 
 const ProfileDetail = ({ label, value }: { label: string, value?: string | React.ReactNode }) => {
@@ -26,19 +30,19 @@ const ProfileDetail = ({ label, value }: { label: string, value?: string | React
   );
 };
 
-export function EmployeeProfileSheet({ employee, open, onOpenChange }: EmployeeProfileSheetProps) {
+export function EmployeeProfileSheet({ employee, open, onOpenChange, onEdit, onDelete }: EmployeeProfileSheetProps) {
   if (!employee) return null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-lg w-full overflow-y-auto">
+      <SheetContent className="sm:max-w-lg w-full flex flex-col">
         <SheetHeader className="text-left">
           <SheetTitle>Employee Profile</SheetTitle>
           <SheetDescription>
             Detailed information about the employee.
           </SheetDescription>
         </SheetHeader>
-        <div className="py-6 space-y-6">
+        <div className="py-6 space-y-6 flex-grow overflow-y-auto pr-6">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
               <AvatarImage src={employee.avatar} alt={employee.name} />
@@ -82,6 +86,16 @@ export function EmployeeProfileSheet({ employee, open, onOpenChange }: EmployeeP
           </div>
 
         </div>
+        <SheetFooter className="mt-auto pt-4 border-t">
+            <div className="flex w-full justify-end gap-2">
+                <Button variant="outline" onClick={() => onEdit(employee)}>
+                    <Edit /> Edit
+                </Button>
+                <Button variant="destructive" onClick={() => onDelete(employee)}>
+                    <Trash /> Delete
+                </Button>
+            </div>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );

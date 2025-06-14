@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import {
   Table,
@@ -26,6 +27,9 @@ import { Employee } from "@/lib/types";
 import { AddEmployeeSheet } from "@/components/AddEmployeeSheet";
 import { BulkImportDialog } from "@/components/BulkImportDialog";
 import { EmployeeProfileSheet } from "@/components/EmployeeProfileSheet";
+import { EditEmployeeSheet } from "@/components/EditEmployeeSheet";
+import { DeleteConfirmationDialog } from "@/components/DeleteConfirmationDialog";
+import { useToast } from "@/components/ui/use-toast";
 
 // Mock data for employees
 const initialEmployees: Employee[] = [
@@ -98,6 +102,7 @@ const initialEmployees: Employee[] = [
 ];
 
 const EmployeeManagement = () => {
+  const { toast } = useToast();
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>(["Active", "On Leave"]);
@@ -107,19 +112,84 @@ const EmployeeManagement = () => {
   const [isProfileSheetOpen, setProfileSheetOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
-  const handleAddEmployee = (newEmployeeData: Omit<Employee, "id" | "status" | "avatar">) => {
+  const [employeeToEdit, setEmployeeToEdit] = useState<Employee | null>(null);
+  const [isEditSheetOpen, setEditSheetOpen] = useState(false);
+
+  const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleAddEmployee = (newEmployeeData: Partial<Omit<Employee, "id" | "status" | "avatar">>) => {
+    if (!newEmployeeData.name || !newEmployeeData.email || !newEmployeeData.department || !newEmployeeData.role || !newEmployeeData.joiningDate) {
+      toast({
+        title: "Error",
+        description: "Could not add employee. Required fields are missing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newEmployee: Employee = {
       id: `EMP${String(employees.length + 1).padStart(3, '0')}`,
-      ...newEmployeeData,
+      name: newEmployeeData.name,
+      email: newEmployeeData.email,
+      department: newEmployeeData.department,
+      role: newEmployeeData.role,
+      joiningDate: newEmployeeData.joiningDate,
+      phone: newEmployeeData.phone,
+      employmentType: newEmployeeData.employmentType,
+      address: newEmployeeData.address,
+      dateOfBirth: newEmployeeData.dateOfBirth,
+      gender: newEmployeeData.gender,
+      reportingManager: newEmployeeData.reportingManager,
+      workLocation: newEmployeeData.workLocation,
       status: "Active",
       avatar: "/placeholder.svg",
     };
     setEmployees([newEmployee, ...employees]);
+    toast({
+      title: "Success",
+      description: "Employee added successfully.",
+    });
   };
 
   const handleViewProfile = (employee: Employee) => {
     setSelectedEmployee(employee);
     setProfileSheetOpen(true);
+  };
+
+  const handleEdit = (employee: Employee) => {
+    setProfileSheetOpen(false);
+    setEmployeeToEdit(employee);
+    setEditSheetOpen(true);
+  };
+
+  const handleUpdateEmployee = (updatedEmployeeData: Employee) => {
+    setEmployees(employees.map(emp => emp.id === updatedEmployeeData.id ? updatedEmployeeData : emp));
+    setEditSheetOpen(false);
+    setEmployeeToEdit(null);
+    toast({
+      title: "Success",
+      description: "Employee details updated successfully.",
+    });
+  };
+
+  const handleDelete = (employee: Employee) => {
+    setProfileSheetOpen(false);
+    setEmployeeToDelete(employee);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteEmployee = () => {
+    if (employeeToDelete) {
+      setEmployees(employees.filter(e => e.id !== employeeToDelete.id));
+      setDeleteDialogOpen(false);
+      setEmployeeToDelete(null);
+      toast({
+        title: "Success",
+        description: "Employee deleted successfully.",
+        variant: "destructive",
+      });
+    }
   };
 
   const filteredEmployees = useMemo(() => {
@@ -287,7 +357,21 @@ const EmployeeManagement = () => {
       <EmployeeProfileSheet 
         employee={selectedEmployee} 
         open={isProfileSheetOpen} 
-        onOpenChange={setProfileSheetOpen} 
+        onOpenChange={setProfileSheetOpen}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      <EditEmployeeSheet
+        open={isEditSheetOpen}
+        onOpenChange={setEditSheetOpen}
+        employee={employeeToEdit}
+        onUpdateEmployee={handleUpdateEmployee}
+      />
+      <DeleteConfirmationDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDeleteEmployee}
+        employeeName={employeeToDelete?.name}
       />
     </>
   );
