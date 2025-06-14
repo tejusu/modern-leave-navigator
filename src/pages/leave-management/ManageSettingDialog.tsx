@@ -14,6 +14,10 @@ import { ConfigureShiftsForm } from "./settings-forms/ConfigureShiftsForm";
 import { SetFiscalYearStartForm } from "./settings-forms/SetFiscalYearStartForm";
 import { DefineLeaveYearCycleForm } from "./settings-forms/DefineLeaveYearCycleForm";
 import { ConfigureYearEndProcessingForm } from "./settings-forms/ConfigureYearEndProcessingForm";
+import { MonthlyAccrualRulesForm } from "./settings-forms/MonthlyAccrualRulesForm";
+import { EmployeeCategorySettingsForm } from "./settings-forms/EmployeeCategorySettingsForm";
+import { ProrationLogicForm } from "./settings-forms/PorationLogicForm";
+import { UpdateCalendarForm } from "./settings-forms/UpdateCalendarForm";
 
 
 export interface SettingDetail {
@@ -33,6 +37,10 @@ const settingForms: Record<string, React.FC<{ onSave: () => void }>> = {
   "Set Fiscal Year Start": SetFiscalYearStartForm,
   "Define Leave Year Cycle": DefineLeaveYearCycleForm,
   "Configure Year-end Processing": ConfigureYearEndProcessingForm,
+  "Monthly Accrual Rules": MonthlyAccrualRulesForm,
+  "Employee Category Settings": EmployeeCategorySettingsForm,
+  "Proration Logic": ProrationLogicForm,
+  "Update Calendar": UpdateCalendarForm,
 };
 
 export function ManageSettingDialog({ setting, onOpenChange }: ManageSettingDialogProps) {
