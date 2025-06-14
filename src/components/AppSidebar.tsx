@@ -22,8 +22,8 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "#" },
-  { icon: Users, label: "Employee Management", href: "#" },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+  { icon: Users, label: "Employee Management", href: "/employee-management" },
   { icon: ClipboardList, label: "Leave Management", href: "#" },
   { icon: CalendarCheck, label: "Holiday Management", href: "#" },
   { icon: BarChart2, label: "Reports & Analytics", href: "#" },
