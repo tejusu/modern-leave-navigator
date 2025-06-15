@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { UseFormReturn } from "react-hook-form";
 import {
@@ -23,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { EmployeeFormValues } from "./schema";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Employee } from "@/lib/types";
 
 type EmployeeDetailsFormProps = {
@@ -192,28 +193,30 @@ export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProp
                 <Command>
                   <CommandInput placeholder="Search manager..." />
                   <CommandEmpty>No manager found.</CommandEmpty>
-                  <CommandGroup>
-                    {safeEmployees.map((employee) => (
-                      <CommandItem
-                        value={employee.name}
-                        key={employee.employeeId}
-                        onSelect={() => {
-                          form.setValue("reportingManager", employee.name);
-                          setManagerPopoverOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            employee.name === field.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {employee.name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
+                  <CommandList>
+                    <CommandGroup>
+                      {safeEmployees.map((employee) => (
+                        <CommandItem
+                          value={employee.name}
+                          key={employee.employeeId}
+                          onSelect={() => {
+                            form.setValue("reportingManager", employee.name);
+                            setManagerPopoverOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              employee.name === field.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {employee.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
                 </Command>
               </PopoverContent>
             </Popover>
