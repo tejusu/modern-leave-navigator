@@ -1,10 +1,10 @@
 
 import { StatCard } from "@/components/StatCard";
-import { UpcomingHolidays } from "@/components/UpcomingHolidays";
 import { Button } from "@/components/ui/button";
 import { Users, FileText, Clock, PieChart, PlusCircle } from "lucide-react";
 import { RecentJoiners } from "@/components/RecentJoiners";
 import { CalendarView } from "@/components/CalendarView";
+import { MonthlyLeaveSummary } from "@/components/MonthlyLeaveSummary";
 
 const Index = () => {
   return (
@@ -54,7 +54,7 @@ const Index = () => {
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
           <CalendarView />
           <RecentJoiners />
-          <UpcomingHolidays />
+          <MonthlyLeaveSummary />
         </div>
       </div>
     </div>
@@ -62,3 +62,4 @@ const Index = () => {
 };
 
 export default Index;
+
