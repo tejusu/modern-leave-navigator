@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +15,6 @@ import {
   BarChart2,
   Bell,
   Settings,
-  Atom,
 } from "lucide-react";
 
 const menuItems = [
@@ -35,8 +33,13 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
-          <Atom className="w-8 h-8 text-primary" />
-          <h1 className="text-xl font-semibold text-sidebar-primary">LeaveFlow</h1>
+          <a href="/">
+            <img
+              src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
+              alt="Acelucid logo"
+              className="h-8 w-auto"
+            />
+          </a>
         </div>
       </SidebarHeader>
       <SidebarContent className="flex-grow">
