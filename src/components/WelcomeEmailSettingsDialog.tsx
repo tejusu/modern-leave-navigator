@@ -23,9 +23,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { getWelcomeEmailTemplate, saveWelcomeEmailTemplate } from "@/lib/email-service";
+import { getWelcomeEmailTemplate, saveWelcomeEmailTemplate, WelcomeEmailTemplate } from "@/lib/email-service";
 
-const emailSchema = z.object({
+const emailSchema: z.ZodType<WelcomeEmailTemplate> = z.object({
   subject: z.string().min(1, "Subject is required."),
   body: z.string().min(1, "Body is required."),
 });

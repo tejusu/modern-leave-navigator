@@ -1,15 +1,21 @@
+
 interface WelcomeEmailParams {
   employee_name: string;
   employee_id: string;
   company_name: string;
 }
 
-const defaultWelcomeTemplate = {
+export interface WelcomeEmailTemplate {
+  subject: string;
+  body: string;
+}
+
+const defaultWelcomeTemplate: WelcomeEmailTemplate = {
   subject: "Welcome to {company_name}!",
   body: "Hi {employee_name},\n\nWelcome to the team! We're excited to have you at {company_name}.\n\nYour employee ID is {employee_id}.\n\nYou can access our employee portal to manage your leaves and personal information.\n\nBest regards,\nThe {company_name} Team",
 };
 
-export const getWelcomeEmailTemplate = (): { subject: string; body: string } => {
+export const getWelcomeEmailTemplate = (): WelcomeEmailTemplate => {
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem("welcomeEmailTemplate");
     if (saved) {
@@ -26,7 +32,7 @@ export const getWelcomeEmailTemplate = (): { subject: string; body: string } => 
   return defaultWelcomeTemplate;
 };
 
-export const saveWelcomeEmailTemplate = (template: { subject: string; body: string }) => {
+export const saveWelcomeEmailTemplate = (template: WelcomeEmailTemplate) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem("welcomeEmailTemplate", JSON.stringify(template));
   }
