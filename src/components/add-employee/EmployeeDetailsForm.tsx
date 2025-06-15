@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { UseFormReturn } from "react-hook-form";
 import {
@@ -34,6 +33,7 @@ type EmployeeDetailsFormProps = {
 
 export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProps) {
   const [managerPopoverOpen, setManagerPopoverOpen] = React.useState(false);
+  const safeEmployees = employees || [];
 
   return (
     <>
@@ -180,7 +180,7 @@ export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProp
                     )}
                   >
                     {field.value
-                      ? employees.find(
+                      ? safeEmployees.find(
                           (employee) => employee.name === field.value
                         )?.name
                       : "Select a manager"}
@@ -193,7 +193,7 @@ export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProp
                   <CommandInput placeholder="Search manager..." />
                   <CommandEmpty>No manager found.</CommandEmpty>
                   <CommandGroup>
-                    {employees.map((employee) => (
+                    {safeEmployees.map((employee) => (
                       <CommandItem
                         value={employee.name}
                         key={employee.employeeId}

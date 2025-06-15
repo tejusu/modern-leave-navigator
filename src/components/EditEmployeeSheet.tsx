@@ -121,7 +121,7 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                 <Form {...form}>
                     <form onSubmit={(e) => e.preventDefault()} className="flex flex-col flex-grow overflow-y-hidden">
                         <div className="flex-grow space-y-6 py-2 overflow-y-auto pr-6">
-                            {step === 1 && <EmployeeDetailsForm form={form} employees={employees.filter(e => e.employeeId !== employee?.employeeId)} />}
+                            {step === 1 && <EmployeeDetailsForm form={form} employees={(employees || []).filter(e => e.employeeId !== employee?.employeeId)} />}
                             {step === 2 && <FinancialComplianceForm form={form} />}
                         </div>
                         <SheetFooter className="pt-6 mt-auto border-t">
