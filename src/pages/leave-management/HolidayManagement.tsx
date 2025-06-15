@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
@@ -54,8 +53,10 @@ export function HolidayManagement() {
       }));
     } else {
       const newHoliday: Holiday = {
-        ...holidayData,
         id: new Date().toISOString(),
+        name: holidayData.name,
+        date: holidayData.date,
+        type: holidayData.type,
       };
       setHolidays([...holidays, newHoliday]);
     }
