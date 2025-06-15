@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Employee } from "@/lib/types";
 import { ScrollArea } from "./ui/scroll-area";
+import { Textarea } from "./ui/textarea";
 
 const formSchema = z.object({
     name: z.string().min(1, { message: "Full name is required." }),
@@ -46,6 +47,9 @@ const formSchema = z.object({
     dateOfBirth: z.string().optional(),
     address: z.string().optional(),
     bloodGroup: z.string().optional(),
+    aadhaarNumber: z.string().optional(),
+    panNumber: z.string().optional(),
+    bankDetails: z.string().optional(),
 });
 
 type EditEmployeeSheetProps = {
@@ -70,6 +74,9 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                 dateOfBirth: employee.dateOfBirth || "",
                 address: employee.address || "",
                 bloodGroup: employee.bloodGroup || "",
+                aadhaarNumber: employee.aadhaarNumber || "",
+                panNumber: employee.panNumber || "",
+                bankDetails: employee.bankDetails || "",
             });
         }
     }, [employee, form, open]);
@@ -85,6 +92,9 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
             dateOfBirth: values.dateOfBirth || undefined,
             address: values.address || undefined,
             bloodGroup: values.bloodGroup || undefined,
+            aadhaarNumber: values.aadhaarNumber || undefined,
+            panNumber: values.panNumber || undefined,
+            bankDetails: values.bankDetails || undefined,
         };
         onUpdateEmployee(updatedEmployee);
     };
@@ -112,6 +122,11 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                             <FormField control={form.control} name="bloodGroup" render={({ field }) => ( <FormItem><FormLabel>Blood Group</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select blood group" /></SelectTrigger></FormControl><SelectContent><SelectItem value="A+">A+</SelectItem><SelectItem value="A-">A-</SelectItem><SelectItem value="B+">B+</SelectItem><SelectItem value="B-">B-</SelectItem><SelectItem value="AB+">AB+</SelectItem><SelectItem value="AB-">AB-</SelectItem><SelectItem value="O+">O+</SelectItem><SelectItem value="O-">O-</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="dateOfBirth" render={({ field }) => ( <FormItem><FormLabel>Date of Birth</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="address" render={({ field }) => ( <FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
+
+                            <h3 className="text-md font-medium pt-4 border-b pb-2">Financial & Compliance Information</h3>
+                            <FormField control={form.control} name="aadhaarNumber" render={({ field }) => ( <FormItem><FormLabel>Aadhaar Number</FormLabel><FormControl><Input placeholder="XXXX XXXX XXXX" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                            <FormField control={form.control} name="panNumber" render={({ field }) => ( <FormItem><FormLabel>PAN Number</FormLabel><FormControl><Input placeholder="ABCDE1234F" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                            <FormField control={form.control} name="bankDetails" render={({ field }) => ( <FormItem><FormLabel>Bank Details</FormLabel><FormControl><Textarea placeholder="e.g. Account Holder Name, Account Number, Bank Name, IFSC Code" {...field} /></FormControl><FormMessage /></FormItem> )} />
                         </form>
                     </Form>
                 </ScrollArea>

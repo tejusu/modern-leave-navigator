@@ -181,6 +181,9 @@ const EmployeeManagement = () => {
       reportingManager: newEmployeeData.reportingManager,
       workLocation: newEmployeeData.workLocation,
       bloodGroup: newEmployeeData.bloodGroup,
+      aadhaarNumber: newEmployeeData.aadhaarNumber,
+      panNumber: newEmployeeData.panNumber,
+      bankDetails: newEmployeeData.bankDetails,
       status: "Active",
       avatar: "/placeholder.svg",
     };

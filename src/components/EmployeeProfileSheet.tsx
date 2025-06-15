@@ -86,6 +86,20 @@ export function EmployeeProfileSheet({ employee, open, onOpenChange, onEdit, onD
               <ProfileDetail label="Address" value={employee.address} />
             </div>
           </div>
+          
+          {(employee.aadhaarNumber || employee.panNumber || employee.bankDetails) && (
+            <div className="space-y-4">
+              <h3 className="text-md font-medium border-b pb-2">Financial & Compliance</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <ProfileDetail label="Aadhaar Number" value={employee.aadhaarNumber} />
+                <ProfileDetail label="PAN Number" value={employee.panNumber} />
+              </div>
+              <ProfileDetail 
+                label="Bank Details" 
+                value={employee.bankDetails && <p className="font-mono text-sm whitespace-pre-wrap">{employee.bankDetails}</p>} 
+              />
+            </div>
+          )}
 
         </div>
         <SheetFooter className="mt-auto pt-4 border-t">
