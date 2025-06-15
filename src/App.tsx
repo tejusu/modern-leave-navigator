@@ -9,10 +9,12 @@ import EmployeeManagement from "./pages/EmployeeManagement";
 import LeaveManagement from "./pages/LeaveManagement";
 import HolidayManagementPage from "./pages/HolidayManagementPage";
 import ReportsAndAnalytics from "./pages/ReportsAndAnalytics";
+import NotificationsAndAlerts from "./pages/NotificationsAndAlerts";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import { UserNav } from "./components/UserNav";
+import { NotificationBell } from "./components/NotificationBell";
 import { Menu } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,7 @@ const App = () => (
                   </SidebarTrigger>
                 </div>
                 <div className="flex-1" />
+                <NotificationBell />
                 <UserNav />
               </header>
               <div className="flex-1 overflow-auto">
@@ -43,6 +46,7 @@ const App = () => (
                   <Route path="/leave-management" element={<LeaveManagement />} />
                   <Route path="/holiday-management" element={<HolidayManagementPage />} />
                   <Route path="/reports-analytics" element={<ReportsAndAnalytics />} />
+                  <Route path="/notifications-alerts" element={<NotificationsAndAlerts />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>

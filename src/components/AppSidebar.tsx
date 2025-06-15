@@ -25,7 +25,7 @@ const menuItems = [
   { icon: ClipboardList, label: "Leave Management", href: "/leave-management" },
   { icon: CalendarCheck, label: "Holiday Management", href: "/holiday-management" },
   { icon: BarChart2, label: "Reports & Analytics", href: "/reports-analytics" },
-  { icon: Bell, label: "Notifications & Alerts", href: "#" },
+  { icon: Bell, label: "Notifications & Alerts", href: "/notifications-alerts" },
 ];
 
 const settingsItem = { icon: Settings, label: "Settings", href: "#" };
