@@ -23,6 +23,7 @@ const settingsGroups = [
       { name: "Set Fiscal Year Start", description: "Set the start month for the leave year (e.g., April)." },
       { name: "Define Leave Year Cycle", description: "Define if leave cycle follows calendar or fiscal year." },
       { name: "Configure Year-end Processing", description: "Manage carry-forward, encashment, or lapsing rules." },
+      { name: "Restricted Holiday Policy", description: "Set the number of restricted holidays employees can avail per year." },
     ],
   },
   {

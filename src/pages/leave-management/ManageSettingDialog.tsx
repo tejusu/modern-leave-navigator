@@ -21,6 +21,7 @@ import { UpdateCalendarForm } from "./settings-forms/UpdateCalendarForm";
 import { EmailTemplatesForm } from "./settings-forms/EmailTemplatesForm";
 import { ApprovalWorkflowsForm } from "./settings-forms/ApprovalWorkflowsForm";
 import { ReminderConfigurationsForm } from "./settings-forms/ReminderConfigurationsForm";
+import { RestrictedHolidayPolicyForm } from "./settings-forms/RestrictedHolidayPolicyForm";
 
 
 export interface SettingDetail {
@@ -47,6 +48,7 @@ const settingForms: Record<string, React.FC<{ onSave: () => void }>> = {
   "Email Templates": EmailTemplatesForm,
   "Approval Workflows": ApprovalWorkflowsForm,
   "Reminder Configurations": ReminderConfigurationsForm,
+  "Restricted Holiday Policy": RestrictedHolidayPolicyForm,
 };
 
 export function ManageSettingDialog({ setting, onOpenChange }: ManageSettingDialogProps) {
