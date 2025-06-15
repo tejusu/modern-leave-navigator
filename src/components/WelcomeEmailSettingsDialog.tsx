@@ -25,12 +25,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { getWelcomeEmailTemplate, saveWelcomeEmailTemplate, WelcomeEmailTemplate } from "@/lib/email-service";
 
-const emailSchema: z.ZodType<WelcomeEmailTemplate> = z.object({
+const emailSchema = z.object({
   subject: z.string().min(1, "Subject is required."),
   body: z.string().min(1, "Body is required."),
 });
 
-type EmailFormValues = z.infer<typeof emailSchema>;
+type EmailFormValues = WelcomeEmailTemplate;
 
 const placeholders = [
   "{employee_name}",
