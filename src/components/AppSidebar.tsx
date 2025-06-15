@@ -1,3 +1,4 @@
+
 import {
   Sidebar,
   SidebarContent,
@@ -6,6 +7,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
@@ -15,7 +17,9 @@ import {
   BarChart2,
   Bell,
   Settings,
+  ChevronsLeft,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
@@ -29,15 +33,22 @@ const menuItems = [
 const settingsItem = { icon: Settings, label: "Settings", href: "/settings" };
 
 export function AppSidebar() {
+  const { toggleSidebar } = useSidebar();
+
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
           <a href="/">
             <img
               src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
               alt="Acelucid logo"
-              className="h-8 w-auto"
+              className="h-8 w-auto group-data-[collapsible=icon]:hidden"
+            />
+             <img
+              src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
+              alt="Acelucid logo"
+              className="h-8 w-auto hidden group-data-[collapsible=icon]:block"
             />
           </a>
         </div>
@@ -67,6 +78,16 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2 p-2 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
+          onClick={toggleSidebar}
+        >
+          <ChevronsLeft className="size-4 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
+          <span className="truncate group-data-[collapsible=icon]:hidden">
+            Collapse
+          </span>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
