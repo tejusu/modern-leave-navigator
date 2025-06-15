@@ -8,7 +8,7 @@ import { MonthlyLeaveSummary } from "@/components/MonthlyLeaveSummary";
 
 const Index = () => {
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
@@ -62,4 +62,3 @@ const Index = () => {
 };
 
 export default Index;
-
