@@ -1,4 +1,3 @@
-
 interface WelcomeEmailParams {
   employee_name: string;
   employee_id: string;
@@ -15,10 +14,12 @@ export const getWelcomeEmailTemplate = (): { subject: string; body: string } => 
     const saved = localStorage.getItem("welcomeEmailTemplate");
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed.subject === 'string' && typeof parsed.body === 'string') {
+          return parsed;
+        }
       } catch (e) {
         console.error("Failed to parse welcome email template from localStorage", e);
-        return defaultWelcomeTemplate;
       }
     }
   }
