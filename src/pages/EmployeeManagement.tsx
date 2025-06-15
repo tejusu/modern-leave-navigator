@@ -102,7 +102,7 @@ const initialEmployees: Employee[] = [
 ];
 
 const generateEmployeeId = (
-  employmentType: "Full-time" | "Part-time" | "Contractor",
+  employmentType: "Full-time" | "Part-time" | "Contractor" | "Intern",
   existingEmployees: Employee[]
 ): string => {
   let prefix = "";
@@ -116,6 +116,10 @@ const generateEmployeeId = (
     case "Part-time":
       prefix = "AL-PT-";
       regex = /^AL-PT-(\d{2})$/;
+      break;
+    case "Intern":
+      prefix = "AL-INT-";
+      regex = /^AL-INT-(\d{2})$/;
       break;
     case "Contractor":
     default:
@@ -142,7 +146,7 @@ const EmployeeManagement = () => {
   const { toast } = useToast();
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string[]>(["Active", "On Leave"]);
+  const [statusFilter, setStatusFilter] = useState<string[]>(["Active", "Deactivated"]);
 
   const [isAddSheetOpen, setAddSheetOpen] = useState(false);
   const [isImportDialogOpen, setImportDialogOpen] = useState(false);
@@ -298,12 +302,6 @@ const EmployeeManagement = () => {
                       Active
                     </DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem
-                      checked={statusFilter.includes("On Leave")}
-                      onCheckedChange={() => toggleStatusFilter("On Leave")}
-                    >
-                      On Leave
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
                       checked={statusFilter.includes("Deactivated")}
                       onCheckedChange={() => toggleStatusFilter("Deactivated")}
                     >
@@ -398,6 +396,7 @@ const EmployeeManagement = () => {
         open={isAddSheetOpen} 
         onOpenChange={setAddSheetOpen} 
         onAddEmployee={handleAddEmployee} 
+        employees={employees}
       />
       <BulkImportDialog 
         open={isImportDialogOpen} 
@@ -415,6 +414,7 @@ const EmployeeManagement = () => {
         onOpenChange={setEditSheetOpen}
         employee={employeeToEdit}
         onUpdateEmployee={handleUpdateEmployee}
+        employees={employees}
       />
       <DeleteConfirmationDialog
         open={isDeleteDialogOpen}

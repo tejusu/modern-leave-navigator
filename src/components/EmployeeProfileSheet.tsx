@@ -106,40 +106,40 @@ export function EmployeeProfileSheet({ employee, open, onOpenChange, onEdit, onD
             </div>
           </div>
           
-          {(employee.aadhaarNumber || employee.panNumber || employee.bankDetails) && (
-            <div className="space-y-4">
-              <h3 className="text-md font-medium border-b pb-2">Financial & Compliance</h3>
-              {isFinancialDetailsIncomplete ? (
-                <Alert variant="warning">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertTitle>Information Missing</AlertTitle>
-                  <AlertDescription>
-                    Financial and compliance details have not been provided. Click 'Edit' to add them.
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <ProfileDetail label="Aadhaar Number" value={employee.aadhaarNumber} />
-                    <ProfileDetail label="PAN Number" value={employee.panNumber} />
-                  </div>
-                  {employee.bankDetails && (
-                    <div className="space-y-2 pt-2">
-                      <p className="text-sm text-muted-foreground">Bank Details</p>
-                      <div className="p-4 border rounded-md bg-muted/50">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <ProfileDetail label="Account Holder" value={employee.bankDetails.accountHolderName} />
-                          <ProfileDetail label="Bank Name" value={employee.bankDetails.bankName} />
-                          <ProfileDetail label="Account Number" value={employee.bankDetails.accountNumber} />
-                          <ProfileDetail label="IFSC Code" value={employee.bankDetails.ifscCode} />
-                        </div>
+          <div className="space-y-4">
+            <h3 className="text-md font-medium border-b pb-2">Financial & Compliance</h3>
+            {isFinancialDetailsIncomplete ? (
+              <Alert variant="warning">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Information Missing</AlertTitle>
+                <AlertDescription>
+                  Financial and compliance details have not been provided. Click 'Edit' to add them.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <ProfileDetail label="Aadhaar Number" value={employee.aadhaarNumber} />
+                  <ProfileDetail label="PAN Number" value={employee.panNumber} />
+                </div>
+                {employee.bankDetails ? (
+                  <div className="space-y-2 pt-2">
+                    <p className="text-sm text-muted-foreground">Bank Details</p>
+                    <div className="p-4 border rounded-md bg-muted/50">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <ProfileDetail label="Account Holder" value={employee.bankDetails.accountHolderName} />
+                        <ProfileDetail label="Bank Name" value={employee.bankDetails.bankName} />
+                        <ProfileDetail label="Account Number" value={employee.bankDetails.accountNumber} />
+                        <ProfileDetail label="IFSC Code" value={employee.bankDetails.ifscCode} />
                       </div>
                     </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+                  </div>
+                ): (
+                   <div className="text-sm text-muted-foreground italic col-span-2 pt-2">No bank details provided.</div>
+                )}
+              </>
+            )}
+          </div>
 
         </div>
         <SheetFooter className="mt-auto pt-4 border-t">

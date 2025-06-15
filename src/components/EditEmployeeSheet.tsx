@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
     Sheet,
     SheetContent,
@@ -12,70 +12,37 @@ import {
     SheetClose,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { Employee } from "@/lib/types";
-import { ScrollArea } from "./ui/scroll-area";
-import { Textarea } from "./ui/textarea";
-
-const formSchema = z.object({
-    name: z.string().min(1, { message: "Full name is required." }),
-    email: z.string().email({ message: "Invalid email address." }),
-    phone: z.string().optional(),
-    department: z.string().min(1, { message: "Department is required." }),
-    role: z.string().min(1, { message: "Designation is required." }),
-    joiningDate: z.string().min(1, { message: "Date of joining is required." }),
-    reportingManager: z.string().optional(),
-    workLocation: z.string().optional(),
-    employmentType: z.enum(["Full-time", "Part-time", "Contractor"]).optional(),
-    gender: z.enum(["Male", "Female", "Other"]).optional(),
-    dateOfBirth: z.string().optional(),
-    address: z.string().optional(),
-    bloodGroup: z.string().optional(),
-    aadhaarNumber: z.string().optional(),
-    panNumber: z.string().optional(),
-    bankDetails: z.object({
-        accountHolderName: z.string().optional(),
-        bankName: z.string().optional(),
-        accountNumber: z.string().optional(),
-        ifscCode: z.string().optional(),
-    }).optional(),
-});
+import { employeeSchema, EmployeeFormValues } from "./add-employee/schema";
+import { EmployeeDetailsForm } from "./add-employee/EmployeeDetailsForm";
+import { FinancialComplianceForm } from "./add-employee/FinancialComplianceForm";
+import { format } from "date-fns";
 
 type EditEmployeeSheetProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     employee: Employee | null;
     onUpdateEmployee: (updatedEmployee: Employee) => void;
+    employees: Employee[];
 };
 
-export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmployee }: EditEmployeeSheetProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmployee, employees }: EditEmployeeSheetProps) {
+    const [step, setStep] = useState(1);
+    
+    const form = useForm<EmployeeFormValues>({
+        resolver: zodResolver(employeeSchema),
     });
 
     useEffect(() => {
         if (employee) {
             form.reset({
                 ...employee,
+                joiningDate: new Date(employee.joiningDate),
+                dateOfBirth: employee.dateOfBirth ? new Date(employee.dateOfBirth) : undefined,
                 phone: employee.phone || "",
                 reportingManager: employee.reportingManager || "",
                 workLocation: employee.workLocation || "",
-                dateOfBirth: employee.dateOfBirth || "",
                 address: employee.address || "",
                 bloodGroup: employee.bloodGroup || "",
                 aadhaarNumber: employee.aadhaarNumber || "",
@@ -88,9 +55,12 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                 },
             });
         }
+        if (!open) {
+          setStep(1);
+        }
     }, [employee, form, open]);
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = (values: EmployeeFormValues) => {
         if (!employee) return;
         
         const bankDetails = values.bankDetails;
@@ -101,113 +71,77 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
         const updatedEmployee: Employee = {
             ...employee,
             ...values,
+            joiningDate: format(values.joiningDate, "yyyy-MM-dd"),
+            dateOfBirth: values.dateOfBirth ? format(values.dateOfBirth, "yyyy-MM-dd") : undefined,
             phone: values.phone || undefined,
             reportingManager: values.reportingManager || undefined,
             workLocation: values.workLocation || undefined,
-            dateOfBirth: values.dateOfBirth || undefined,
             address: values.address || undefined,
             bloodGroup: values.bloodGroup || undefined,
             aadhaarNumber: values.aadhaarNumber || undefined,
             panNumber: values.panNumber || undefined,
+            employmentType: values.employmentType || "Full-time",
             bankDetails: finalBankDetails,
         };
         onUpdateEmployee(updatedEmployee);
     };
+    
+    const handleNext = async () => {
+        const fields: (keyof EmployeeFormValues)[] = [
+          "name", "email", "department", "role", "joiningDate", "employmentType",
+        ];
+        const output = await form.trigger(fields, { shouldFocus: true });
+        if (!output) return;
+        setStep(2);
+    };
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent className="sm:max-w-lg w-full flex flex-col">
+            <SheetContent className="sm:max-w-2xl w-full flex flex-col">
                 <SheetHeader>
                     <SheetTitle>Edit Employee</SheetTitle>
-                    <SheetDescription>Update the details of an existing employee.</SheetDescription>
+                    <SheetDescription>
+                        {step === 1
+                            ? "Update the employee's main details."
+                            : "Update financial and compliance details."
+                        }
+                    </SheetDescription>
                 </SheetHeader>
-                <ScrollArea className="flex-grow pr-6">
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-                            <FormField control={form.control} name="name" render={({ field }) => ( <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="email" render={({ field }) => ( <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="phone" render={({ field }) => ( <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="department" render={({ field }) => ( <FormItem><FormLabel>Department/Team</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="role" render={({ field }) => ( <FormItem><FormLabel>Designation/Job Title</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="joiningDate" render={({ field }) => ( <FormItem><FormLabel>Date of Joining</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="reportingManager" render={({ field }) => ( <FormItem><FormLabel>Reporting Manager</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="workLocation" render={({ field }) => ( <FormItem><FormLabel>Work Location</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="employmentType" render={({ field }) => ( <FormItem><FormLabel>Employment Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Full-time">Full-time</SelectItem><SelectItem value="Part-time">Part-time</SelectItem><SelectItem value="Contractor">Contractor</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="gender" render={({ field }) => ( <FormItem><FormLabel>Gender</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Male">Male</SelectItem><SelectItem value="Female">Female</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="bloodGroup" render={({ field }) => ( <FormItem><FormLabel>Blood Group</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select blood group" /></SelectTrigger></FormControl><SelectContent><SelectItem value="A+">A+</SelectItem><SelectItem value="A-">A-</SelectItem><SelectItem value="B+">B+</SelectItem><SelectItem value="B-">B-</SelectItem><SelectItem value="AB+">AB+</SelectItem><SelectItem value="AB-">AB-</SelectItem><SelectItem value="O+">O+</SelectItem><SelectItem value="O-">O-</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="dateOfBirth" render={({ field }) => ( <FormItem><FormLabel>Date of Birth</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="address" render={({ field }) => ( <FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
-
-                            <h3 className="text-md font-medium pt-4 border-b pb-2">Financial & Compliance Information</h3>
-                            <FormField control={form.control} name="aadhaarNumber" render={({ field }) => ( <FormItem><FormLabel>Aadhaar Number</FormLabel><FormControl><Input placeholder="XXXX XXXX XXXX" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="panNumber" render={({ field }) => ( <FormItem><FormLabel>PAN Number</FormLabel><FormControl><Input placeholder="ABCDE1234F" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            
-                            <div>
-                              <FormLabel>Bank Details</FormLabel>
-                              <div className="space-y-4 rounded-md border p-4 mt-2">
-                                <FormField
-                                  control={form.control}
-                                  name="bankDetails.accountHolderName"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-sm font-normal">Account Holder Name</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="e.g. John Doe" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name="bankDetails.bankName"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-sm font-normal">Bank Name</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="e.g. State Bank of Example" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name="bankDetails.accountNumber"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-sm font-normal">Account Number</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="e.g. 1234567890" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                                <FormField
-                                  control={form.control}
-                                  name="bankDetails.ifscCode"
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel className="text-sm font-normal">IFSC Code</FormLabel>
-                                      <FormControl>
-                                        <Input placeholder="e.g. SBIN0001234" {...field} />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
-                            </div>
-                        </form>
-                    </Form>
-                </ScrollArea>
-                <SheetFooter>
-                    <SheetClose asChild>
-                        <Button type="button" variant="outline">Cancel</Button>
-                    </SheetClose>
-                    <Button type="submit" onClick={form.handleSubmit(onSubmit)}>Save Changes</Button>
-                </SheetFooter>
+                <div className="flex items-center gap-4 my-4">
+                    <div className="flex items-center gap-2">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 1 ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>1</div>
+                        <span className={`${step >= 1 ? 'font-semibold' : ''}`}>Employee Details</span>
+                    </div>
+                    <div className="flex-1 h-px bg-border"></div>
+                    <div className="flex items-center gap-2">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 2 ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>2</div>
+                        <span className={`${step >= 2 ? 'font-semibold' : 'text-muted-foreground'}`}>Financial & Compliance</span>
+                    </div>
+                </div>
+                <Form {...form}>
+                    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col flex-grow overflow-y-hidden">
+                        <div className="flex-grow space-y-6 py-2 overflow-y-auto pr-6">
+                            {step === 1 && <EmployeeDetailsForm form={form} employees={employees.filter(e => e.employeeId !== employee?.employeeId)} />}
+                            {step === 2 && <FinancialComplianceForm form={form} />}
+                        </div>
+                        <SheetFooter className="pt-6 mt-auto border-t">
+                            {step === 1 && (
+                                <div className="flex w-full justify-between">
+                                    <SheetClose asChild>
+                                        <Button type="button" variant="outline">Cancel</Button>
+                                    </SheetClose>
+                                    <Button type="button" onClick={handleNext}>Next</Button>
+                                </div>
+                            )}
+                            {step === 2 && (
+                                <div className="flex w-full justify-between">
+                                    <Button type="button" variant="outline" onClick={() => setStep(1)}>Back</Button>
+                                    <Button type="button" onClick={form.handleSubmit(onSubmit)}>Save Changes</Button>
+                                </div>
+                            )}
+                        </SheetFooter>
+                    </form>
+                </Form>
             </SheetContent>
         </Sheet>
     );

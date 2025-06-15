@@ -22,14 +22,19 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { EmployeeFormValues } from "./schema";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Employee } from "@/lib/types";
 
 type EmployeeDetailsFormProps = {
   form: UseFormReturn<EmployeeFormValues>;
+  employees: Employee[];
 };
 
-export function EmployeeDetailsForm({ form }: EmployeeDetailsFormProps) {
+export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProps) {
+  const [managerPopoverOpen, setManagerPopoverOpen] = React.useState(false);
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -148,6 +153,7 @@ export function EmployeeDetailsForm({ form }: EmployeeDetailsFormProps) {
                   <SelectItem value="Full-time">Full-time</SelectItem>
                   <SelectItem value="Part-time">Part-time</SelectItem>
                   <SelectItem value="Contractor">Contractor</SelectItem>
+                  <SelectItem value="Intern">Intern</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -160,11 +166,57 @@ export function EmployeeDetailsForm({ form }: EmployeeDetailsFormProps) {
         control={form.control}
         name="reportingManager"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="flex flex-col">
             <FormLabel>Reporting Manager</FormLabel>
-            <FormControl>
-              <Input placeholder="e.g. Jane Smith" {...field} />
-            </FormControl>
+            <Popover open={managerPopoverOpen} onOpenChange={setManagerPopoverOpen}>
+              <PopoverTrigger asChild>
+                <FormControl>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={cn(
+                      "w-full justify-between",
+                      !field.value && "text-muted-foreground"
+                    )}
+                  >
+                    {field.value
+                      ? employees.find(
+                          (employee) => employee.name === field.value
+                        )?.name
+                      : "Select a manager"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                <Command>
+                  <CommandInput placeholder="Search manager..." />
+                  <CommandEmpty>No manager found.</CommandEmpty>
+                  <CommandGroup>
+                    {employees.map((employee) => (
+                      <CommandItem
+                        value={employee.name}
+                        key={employee.employeeId}
+                        onSelect={() => {
+                          form.setValue("reportingManager", employee.name);
+                          setManagerPopoverOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            employee.name === field.value
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {employee.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
             <FormMessage />
           </FormItem>
         )}

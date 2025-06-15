@@ -12,7 +12,7 @@ export const employeeSchema = z.object({
   }),
   reportingManager: z.string().optional(),
   workLocation: z.string().optional(),
-  employmentType: z.enum(["Full-time", "Part-time", "Contractor"]),
+  employmentType: z.enum(["Full-time", "Part-time", "Contractor", "Intern"]),
   gender: z.enum(["Male", "Female", "Other"]).optional(),
   dateOfBirth: z.date().optional(),
   address: z.string().optional(),

@@ -10,7 +10,7 @@ export type Employee = {
   joiningDate: string;
   reportingManager?: string;
   workLocation?: string;
-  employmentType: "Full-time" | "Part-time" | "Contractor";
+  employmentType: "Full-time" | "Part-time" | "Contractor" | "Intern";
   gender?: "Male" | "Female" | "Other";
   dateOfBirth?: string;
   address?: string;

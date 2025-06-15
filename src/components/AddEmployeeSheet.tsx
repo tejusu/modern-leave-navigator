@@ -23,9 +23,10 @@ type AddEmployeeSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAddEmployee: (employee: Omit<Employee, "employeeId" | "status" | "avatar">) => void;
+  employees: Employee[];
 };
 
-export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmployeeSheetProps) {
+export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee, employees }: AddEmployeeSheetProps) {
   const [step, setStep] = React.useState(1);
   
   const form = useForm<EmployeeFormValues>({
@@ -122,7 +123,7 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
         <Form {...form}>
           <form onSubmit={(e) => e.preventDefault()} className="flex flex-col flex-grow overflow-y-hidden">
             <div className="flex-grow space-y-6 py-2 overflow-y-auto pr-6">
-              {step === 1 && <EmployeeDetailsForm form={form} />}
+              {step === 1 && <EmployeeDetailsForm form={form} employees={employees} />}
               {step === 2 && <FinancialComplianceForm form={form} />}
             </div>
             <SheetFooter className="pt-6 mt-auto border-t">
