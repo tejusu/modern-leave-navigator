@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import {
   Table,
@@ -34,7 +33,7 @@ import { useToast } from "@/components/ui/use-toast";
 // Mock data for employees
 const initialEmployees: Employee[] = [
   {
-    id: "EMP001",
+    employeeId: "AL001",
     name: "Olivia Martin",
     email: "olivia.martin@leaveflow.com",
     avatar: "/placeholder.svg",
@@ -45,7 +44,7 @@ const initialEmployees: Employee[] = [
     employmentType: "Full-time",
   },
   {
-    id: "EMP002",
+    employeeId: "AL002",
     name: "Jackson Lee",
     email: "jackson.lee@leaveflow.com",
     avatar: "/placeholder.svg",
@@ -56,7 +55,7 @@ const initialEmployees: Employee[] = [
     employmentType: "Full-time",
   },
   {
-    id: "EMP003",
+    employeeId: "AL003",
     name: "Isabella Nguyen",
     email: "isabella.nguyen@leaveflow.com",
     avatar: "/placeholder.svg",
@@ -67,7 +66,7 @@ const initialEmployees: Employee[] = [
     employmentType: "Full-time",
   },
   {
-    id: "EMP004",
+    employeeId: "AL004",
     name: "William Kim",
     email: "will.kim@leaveflow.com",
     avatar: "/placeholder.svg",
@@ -78,7 +77,7 @@ const initialEmployees: Employee[] = [
     employmentType: "Full-time",
   },
     {
-    id: "EMP005",
+    employeeId: "AL005",
     name: "Sophia Rodriguez",
     email: "sophia.rodriguez@leaveflow.com",
     avatar: "/placeholder.svg",
@@ -89,7 +88,7 @@ const initialEmployees: Employee[] = [
     employmentType: "Full-time",
   },
   {
-    id: "EMP006",
+    employeeId: "AL-CT-01",
     name: "James Brown",
     email: "james.brown@leaveflow.com",
     avatar: "/placeholder.svg",
@@ -100,6 +99,43 @@ const initialEmployees: Employee[] = [
     employmentType: "Contractor",
   },
 ];
+
+const generateEmployeeId = (
+  employmentType: "Full-time" | "Part-time" | "Contractor",
+  existingEmployees: Employee[]
+): string => {
+  let prefix = "";
+  let regex: RegExp;
+
+  switch (employmentType) {
+    case "Full-time":
+      prefix = "AL";
+      regex = /^AL(\d{3})$/;
+      break;
+    case "Part-time":
+      prefix = "AL-PT-";
+      regex = /^AL-PT-(\d{2})$/;
+      break;
+    case "Contractor":
+    default:
+      prefix = "AL-CT-";
+      regex = /^AL-CT-(\d{2})$/;
+      break;
+  }
+  
+  const relevantIds = existingEmployees
+    .map(e => e.employeeId)
+    .filter(id => regex.test(id))
+    .map(id => parseInt(id.match(regex)![1], 10));
+
+  const maxId = relevantIds.length > 0 ? Math.max(...relevantIds) : 0;
+  const newIdNumber = maxId + 1;
+
+  if (employmentType === "Full-time") {
+    return `${prefix}${String(newIdNumber).padStart(3, '0')}`;
+  }
+  return `${prefix}${String(newIdNumber).padStart(2, '0')}`;
+};
 
 const EmployeeManagement = () => {
   const { toast } = useToast();
@@ -118,8 +154,8 @@ const EmployeeManagement = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleAddEmployee = (newEmployeeData: Partial<Omit<Employee, "id" | "status" | "avatar">>) => {
-    if (!newEmployeeData.name || !newEmployeeData.email || !newEmployeeData.department || !newEmployeeData.role || !newEmployeeData.joiningDate) {
+  const handleAddEmployee = (newEmployeeData: Partial<Omit<Employee, "employeeId" | "status" | "avatar">>) => {
+    if (!newEmployeeData.name || !newEmployeeData.email || !newEmployeeData.department || !newEmployeeData.role || !newEmployeeData.joiningDate || !newEmployeeData.employmentType) {
       toast({
         title: "Error",
         description: "Could not add employee. Required fields are missing.",
@@ -128,8 +164,10 @@ const EmployeeManagement = () => {
       return;
     }
 
+    const newEmployeeId = generateEmployeeId(newEmployeeData.employmentType, employees);
+
     const newEmployee: Employee = {
-      id: `EMP${String(employees.length + 1).padStart(3, '0')}`,
+      employeeId: newEmployeeId,
       name: newEmployeeData.name,
       email: newEmployeeData.email,
       department: newEmployeeData.department,
@@ -142,6 +180,7 @@ const EmployeeManagement = () => {
       gender: newEmployeeData.gender,
       reportingManager: newEmployeeData.reportingManager,
       workLocation: newEmployeeData.workLocation,
+      bloodGroup: newEmployeeData.bloodGroup,
       status: "Active",
       avatar: "/placeholder.svg",
     };
@@ -164,7 +203,7 @@ const EmployeeManagement = () => {
   };
 
   const handleUpdateEmployee = (updatedEmployeeData: Employee) => {
-    setEmployees(employees.map(emp => emp.id === updatedEmployeeData.id ? updatedEmployeeData : emp));
+    setEmployees(employees.map(emp => emp.employeeId === updatedEmployeeData.employeeId ? updatedEmployeeData : emp));
     setEditSheetOpen(false);
     setEmployeeToEdit(null);
     toast({
@@ -181,7 +220,7 @@ const EmployeeManagement = () => {
 
   const confirmDeleteEmployee = () => {
     if (employeeToDelete) {
-      setEmployees(employees.filter(e => e.id !== employeeToDelete.id));
+      setEmployees(employees.filter(e => e.employeeId !== employeeToDelete.employeeId));
       setDeleteDialogOpen(false);
       setEmployeeToDelete(null);
       toast({
@@ -199,7 +238,8 @@ const EmployeeManagement = () => {
       )
       .filter((employee) =>
         employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        employee.email.toLowerCase().includes(searchQuery.toLowerCase())
+        employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase())
       );
   }, [employees, searchQuery, statusFilter]);
 
@@ -287,6 +327,7 @@ const EmployeeManagement = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Employee</TableHead>
+                    <TableHead>Employee ID</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="hidden md:table-cell">Role</TableHead>
                     <TableHead className="hidden lg:table-cell">Department</TableHead>
@@ -296,7 +337,7 @@ const EmployeeManagement = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredEmployees.map((employee) => (
-                    <TableRow key={employee.id}>
+                    <TableRow key={employee.employeeId}>
                       <TableCell>
                         <div className="flex items-center gap-4">
                           <Avatar className="h-9 w-9">
@@ -309,6 +350,7 @@ const EmployeeManagement = () => {
                           </div>
                         </div>
                       </TableCell>
+                      <TableCell>{employee.employeeId}</TableCell>
                       <TableCell>
                         <Badge variant={
                           employee.status === "Active" ? "default" :

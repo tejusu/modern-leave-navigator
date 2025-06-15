@@ -45,6 +45,7 @@ const formSchema = z.object({
     gender: z.enum(["Male", "Female", "Other"]).optional(),
     dateOfBirth: z.string().optional(),
     address: z.string().optional(),
+    bloodGroup: z.string().optional(),
 });
 
 type EditEmployeeSheetProps = {
@@ -68,6 +69,7 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                 workLocation: employee.workLocation || "",
                 dateOfBirth: employee.dateOfBirth || "",
                 address: employee.address || "",
+                bloodGroup: employee.bloodGroup || "",
             });
         }
     }, [employee, form, open]);
@@ -82,6 +84,7 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
             workLocation: values.workLocation || undefined,
             dateOfBirth: values.dateOfBirth || undefined,
             address: values.address || undefined,
+            bloodGroup: values.bloodGroup || undefined,
         };
         onUpdateEmployee(updatedEmployee);
     };
@@ -106,6 +109,7 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                             <FormField control={form.control} name="workLocation" render={({ field }) => ( <FormItem><FormLabel>Work Location</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="employmentType" render={({ field }) => ( <FormItem><FormLabel>Employment Type</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Full-time">Full-time</SelectItem><SelectItem value="Part-time">Part-time</SelectItem><SelectItem value="Contractor">Contractor</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="gender" render={({ field }) => ( <FormItem><FormLabel>Gender</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger></FormControl><SelectContent><SelectItem value="Male">Male</SelectItem><SelectItem value="Female">Female</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
+                            <FormField control={form.control} name="bloodGroup" render={({ field }) => ( <FormItem><FormLabel>Blood Group</FormLabel><Select onValueChange={field.onChange} defaultValue={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Select blood group" /></SelectTrigger></FormControl><SelectContent><SelectItem value="A+">A+</SelectItem><SelectItem value="A-">A-</SelectItem><SelectItem value="B+">B+</SelectItem><SelectItem value="B-">B-</SelectItem><SelectItem value="AB+">AB+</SelectItem><SelectItem value="AB-">AB-</SelectItem><SelectItem value="O+">O+</SelectItem><SelectItem value="O-">O-</SelectItem></SelectContent></Select><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="dateOfBirth" render={({ field }) => ( <FormItem><FormLabel>Date of Birth</FormLabel><FormControl><Input type="date" {...field} /></FormControl><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="address" render={({ field }) => ( <FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem> )} />
                         </form>
@@ -121,4 +125,3 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
         </Sheet>
     );
 }
-

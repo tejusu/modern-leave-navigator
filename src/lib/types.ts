@@ -1,6 +1,5 @@
-
 export type Employee = {
-  id: string;
+  employeeId: string;
   name?: string;
   email?: string;
   phone?: string;
@@ -15,6 +14,10 @@ export type Employee = {
   gender?: "Male" | "Female" | "Other";
   dateOfBirth?: string;
   address?: string;
+  bloodGroup?: string;
+  aadhaarNumber?: string;
+  panNumber?: string;
+  bankDetails?: string;
 };
 
 export type LeaveApplication = {

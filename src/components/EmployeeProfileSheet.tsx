@@ -1,3 +1,4 @@
+
 import {
   Sheet,
   SheetContent,
@@ -58,7 +59,7 @@ export function EmployeeProfileSheet({ employee, open, onOpenChange, onEdit, onD
           <div className="space-y-4">
             <h3 className="text-md font-medium border-b pb-2">Job Information</h3>
             <div className="grid grid-cols-2 gap-4">
-              <ProfileDetail label="Employee ID" value={employee.id} />
+              <ProfileDetail label="Employee ID" value={employee.employeeId} />
                <ProfileDetail label="Status" value={
                 <Badge variant={
                   employee.status === "Active" ? "default" :
@@ -81,6 +82,7 @@ export function EmployeeProfileSheet({ employee, open, onOpenChange, onEdit, onD
             <div className="grid grid-cols-2 gap-4">
               <ProfileDetail label="Date of Birth" value={employee.dateOfBirth ? new Date(employee.dateOfBirth).toLocaleDateString() : undefined} />
               <ProfileDetail label="Gender" value={employee.gender} />
+              <ProfileDetail label="Blood Group" value={employee.bloodGroup} />
               <ProfileDetail label="Address" value={employee.address} />
             </div>
           </div>

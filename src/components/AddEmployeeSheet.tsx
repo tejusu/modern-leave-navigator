@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {
   Sheet,
@@ -53,12 +52,13 @@ const employeeSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"]).optional(),
   dateOfBirth: z.date().optional(),
   address: z.string().optional(),
+  bloodGroup: z.string().optional(),
 });
 
 type AddEmployeeSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddEmployee: (employee: Omit<Employee, "id" | "status" | "avatar">) => void;
+  onAddEmployee: (employee: Omit<Employee, "employeeId" | "status" | "avatar">) => void;
 };
 
 export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmployeeSheetProps) {
@@ -352,6 +352,33 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="bloodGroup"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Blood Group</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select blood group" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A-">A-</SelectItem>
+                      <SelectItem value="B+">B+</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="AB+">AB+</SelectItem>
+                      <SelectItem value="AB-">AB-</SelectItem>
+                      <SelectItem value="O+">O+</SelectItem>
+                      <SelectItem value="O-">O-</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <SheetFooter className="pt-6">
               <SheetClose asChild>
