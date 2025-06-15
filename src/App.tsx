@@ -10,6 +10,7 @@ import LeaveManagement from "./pages/LeaveManagement";
 import HolidayManagementPage from "./pages/HolidayManagementPage";
 import ReportsAndAnalytics from "./pages/ReportsAndAnalytics";
 import NotificationsAndAlerts from "./pages/NotificationsAndAlerts";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
@@ -47,6 +48,7 @@ const App = () => (
                   <Route path="/holiday-management" element={<HolidayManagementPage />} />
                   <Route path="/reports-analytics" element={<ReportsAndAnalytics />} />
                   <Route path="/notifications-alerts" element={<NotificationsAndAlerts />} />
+                  <Route path="/settings" element={<Settings />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>

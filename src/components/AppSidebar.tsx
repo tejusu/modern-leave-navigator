@@ -28,7 +28,7 @@ const menuItems = [
   { icon: Bell, label: "Notifications & Alerts", href: "/notifications-alerts" },
 ];
 
-const settingsItem = { icon: Settings, label: "Settings", href: "#" };
+const settingsItem = { icon: Settings, label: "Settings", href: "/settings" };
 
 export function AppSidebar() {
   return (
