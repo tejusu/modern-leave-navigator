@@ -8,14 +8,16 @@ import { AddEditHolidayDialog, HolidayFormValues } from "./AddEditHolidayDialog"
 import { DeleteHolidayDialog } from "./DeleteHolidayDialog";
 
 const initialHolidays: Holiday[] = [
-  { id: '1', name: 'New Year\'s Day', date: new Date('2025-01-01T00:00:00'), type: 'National' },
-  { id: '2', name: 'Good Friday', date: new Date('2025-04-18T00:00:00'), type: 'National' },
-  { id: '3', name: 'Memorial Day', date: new Date('2025-05-26T00:00:00'), type: 'National' },
-  { id: '4', name: 'Independence Day', date: new Date('2025-07-04T00:00:00'), type: 'National' },
-  { id: '5', name: 'Labor Day', date: new Date('2025-09-01T00:00:00'), type: 'National' },
-  { id: '6', name: 'Thanksgiving Day', date: new Date('2025-11-27T00:00:00'), type: 'National' },
-  { id: '7', name: 'Christmas Day', date: new Date('2025-12-25T00:00:00'), type: 'National' },
-  { id: '8', name: 'Regional Holiday', date: new Date('2025-08-15T00:00:00'), type: 'Regional', departments: ['Engineering'] },
+  { id: '1', name: 'New Year\'s Day', date: new Date('2025-01-01T00:00:00'), type: 'General Holiday' },
+  { id: '2', name: 'Good Friday', date: new Date('2025-04-18T00:00:00'), type: 'General Holiday' },
+  { id: '3', name: 'Memorial Day', date: new Date('2025-05-26T00:00:00'), type: 'General Holiday' },
+  { id: '4', name: 'Independence Day', date: new Date('2025-07-04T00:00:00'), type: 'General Holiday' },
+  { id: '5', name: 'Labor Day', date: new Date('2025-09-01T00:00:00'), type: 'General Holiday' },
+  { id: '6', name: 'Thanksgiving Day', date: new Date('2025-11-27T00:00:00'), type: 'General Holiday' },
+  { id: '7', name: 'Christmas Day', date: new Date('2025-12-25T00:00:00'), type: 'General Holiday' },
+  { id: '8', name: 'State Foundation Day', date: new Date('2025-08-15T00:00:00'), type: 'General Holiday', departments: ['Engineering'] },
+  { id: '9', name: 'Raksha Bandhan', date: new Date('2025-08-19T00:00:00'), type: 'Restricted Holiday' },
+  { id: '10', name: 'Ganesh Chaturthi', date: new Date('2025-08-29T00:00:00'), type: 'Restricted Holiday' },
 ];
 
 export function HolidayManagement() {

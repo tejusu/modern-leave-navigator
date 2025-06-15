@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -37,7 +36,7 @@ export function HolidayList({ holidays, onEdit, onDelete }: HolidayListProps) {
                   <TableCell>{format(holiday.date, "MMM dd, yyyy")}</TableCell>
                   <TableCell className="font-medium">{holiday.name}</TableCell>
                   <TableCell>
-                    <Badge variant={holiday.type === 'National' ? 'default' : 'secondary'}>{holiday.type}</Badge>
+                    <Badge variant={holiday.type === 'General Holiday' ? 'default' : 'secondary'}>{holiday.type}</Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="icon" onClick={() => onEdit(holiday)}>

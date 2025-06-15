@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,7 +31,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export const holidaySchema = z.object({
   name: z.string().min(1, { message: "Holiday name is required." }),
   date: z.date({ required_error: "A date is required." }),
-  type: z.enum(["National", "Regional", "Optional"]),
+  type: z.enum(["General Holiday", "Restricted Holiday"]),
 });
 
 export type HolidayFormValues = z.infer<typeof holidaySchema>;
@@ -61,7 +60,7 @@ export function AddEditHolidayDialog({ open, onOpenChange, onSave, holiday }: Ad
         form.reset({
           name: "",
           date: undefined,
-          type: "National",
+          type: "General Holiday",
         });
       }
     }
@@ -142,9 +141,8 @@ export function AddEditHolidayDialog({ open, onOpenChange, onSave, holiday }: Ad
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="National">National</SelectItem>
-                      <SelectItem value="Regional">Regional</SelectItem>
-                      <SelectItem value="Optional">Optional</SelectItem>
+                      <SelectItem value="General Holiday">General Holiday</SelectItem>
+                      <SelectItem value="Restricted Holiday">Restricted Holiday</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

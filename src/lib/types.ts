@@ -38,6 +38,6 @@ export type Holiday = {
   id: string;
   date: Date;
   name: string;
-  type: "National" | "Regional" | "Optional";
+  type: "General Holiday" | "Restricted Holiday";
   departments?: string[];
 };
