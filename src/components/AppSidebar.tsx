@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -38,7 +37,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between">
           <a href="/">
             <img
               src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
@@ -46,11 +45,18 @@ export function AppSidebar() {
               className="h-8 w-auto group-data-[collapsible=icon]:hidden"
             />
              <img
-              src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
+              src="/lovable-uploads/aa84d819-1e07-446e-94a4-f8503f57581e.png"
               alt="Acelucid logo"
               className="h-8 w-auto hidden group-data-[collapsible=icon]:block"
             />
           </a>
+          <Button
+            variant="ghost"
+            className="size-8 p-0"
+            onClick={toggleSidebar}
+          >
+            <ChevronsLeft className="size-5 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
+          </Button>
         </div>
       </SidebarHeader>
       <SidebarContent className="flex-grow">
@@ -67,7 +73,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 space-y-4">
+      <SidebarFooter className="p-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
@@ -78,16 +84,6 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2 p-2 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
-          onClick={toggleSidebar}
-        >
-          <ChevronsLeft className="size-4 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
-          <span className="truncate group-data-[collapsible=icon]:hidden">
-            Collapse
-          </span>
-        </Button>
       </SidebarFooter>
     </Sidebar>
   );
