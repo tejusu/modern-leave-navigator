@@ -57,12 +57,26 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
       ? bankDetails
       : undefined;
 
-    onAddEmployee({
-      ...values,
-      bankDetails: finalBankDetails,
+    const newEmployeeData: Omit<Employee, "employeeId" | "status" | "avatar"> = {
+      name: values.name,
+      email: values.email,
+      department: values.department,
+      role: values.role,
+      employmentType: values.employmentType,
       joiningDate: format(values.joiningDate, "yyyy-MM-dd"),
       dateOfBirth: values.dateOfBirth ? format(values.dateOfBirth, "yyyy-MM-dd") : undefined,
-    });
+      phone: values.phone,
+      reportingManager: values.reportingManager,
+      workLocation: values.workLocation,
+      gender: values.gender,
+      address: values.address,
+      bloodGroup: values.bloodGroup,
+      aadhaarNumber: values.aadhaarNumber,
+      panNumber: values.panNumber,
+      bankDetails: finalBankDetails,
+    };
+
+    onAddEmployee(newEmployeeData);
     onOpenChange(false);
   };
 
