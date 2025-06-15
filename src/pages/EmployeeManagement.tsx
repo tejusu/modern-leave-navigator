@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PlusCircle, Upload, MoreHorizontal, Search, Filter, AlertTriangle } from "lucide-react";
+import { PlusCircle, Upload, MoreHorizontal, Search, Filter, AlertTriangle, Settings } from "lucide-react";
 import { Employee } from "@/lib/types";
 import { AddEmployeeSheet } from "@/components/AddEmployeeSheet";
 import { BulkImportDialog } from "@/components/BulkImportDialog";
@@ -30,6 +30,8 @@ import { EditEmployeeSheet } from "@/components/EditEmployeeSheet";
 import { DeleteConfirmationDialog } from "@/components/DeleteConfirmationDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { sendWelcomeEmail } from "@/lib/email-service";
+import { WelcomeEmailSettingsDialog } from "@/components/WelcomeEmailSettingsDialog";
 
 // Mock data for employees
 const initialEmployees: Employee[] = [
@@ -159,6 +161,8 @@ const EmployeeManagement = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+  const [isEmailSettingsOpen, setEmailSettingsOpen] = useState(false);
+
   const handleAddEmployee = (newEmployeeData: Omit<Employee, "employeeId" | "status" | "avatar">) => {
     const newEmployeeId = generateEmployeeId(newEmployeeData.employmentType, employees);
 
@@ -169,9 +173,12 @@ const EmployeeManagement = () => {
       avatar: "/placeholder.svg",
     };
     setEmployees([newEmployee, ...employees]);
+    
+    sendWelcomeEmail(newEmployee);
+    
     toast({
       title: "Success",
-      description: "Employee added successfully.",
+      description: "Employee added and welcome email sent.",
     });
   };
 
@@ -256,13 +263,17 @@ const EmployeeManagement = () => {
               View, add, and manage your organization's employees.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => setEmailSettingsOpen(true)}>
+              <Settings className="mr-2 h-4 w-4" />
+              Email Settings
+            </Button>
             <Button onClick={() => setAddSheetOpen(true)}>
-              <PlusCircle />
+              <PlusCircle className="mr-2 h-4 w-4" />
               Add Employee
             </Button>
             <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
-              <Upload />
+              <Upload className="mr-2 h-4 w-4" />
               Bulk Import
             </Button>
           </div>
@@ -421,6 +432,10 @@ const EmployeeManagement = () => {
         onOpenChange={setDeleteDialogOpen}
         onConfirm={confirmDeleteEmployee}
         employeeName={employeeToDelete?.name}
+      />
+      <WelcomeEmailSettingsDialog
+        open={isEmailSettingsOpen}
+        onOpenChange={setEmailSettingsOpen}
       />
     </>
   );
