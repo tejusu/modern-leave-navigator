@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {
   Sheet,
@@ -56,7 +55,12 @@ const employeeSchema = z.object({
   bloodGroup: z.string().optional(),
   aadhaarNumber: z.string().optional(),
   panNumber: z.string().optional(),
-  bankDetails: z.string().optional(),
+  bankDetails: z.object({
+    accountHolderName: z.string().optional(),
+    bankName: z.string().optional(),
+    accountNumber: z.string().optional(),
+    ifscCode: z.string().optional(),
+  }).optional(),
 });
 
 type AddEmployeeSheetProps = {
@@ -82,13 +86,24 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
       address: "",
       aadhaarNumber: "",
       panNumber: "",
-      bankDetails: "",
+      bankDetails: {
+        accountHolderName: "",
+        bankName: "",
+        accountNumber: "",
+        ifscCode: "",
+      },
     },
   });
 
   const onSubmit = (values: z.infer<typeof employeeSchema>) => {
+    const bankDetails = values.bankDetails;
+    const finalBankDetails = (bankDetails && (bankDetails.accountHolderName || bankDetails.accountNumber || bankDetails.bankName || bankDetails.ifscCode))
+      ? bankDetails
+      : undefined;
+
     onAddEmployee({
       ...values,
+      bankDetails: finalBankDetails,
       joiningDate: format(values.joiningDate, "yyyy-MM-dd"),
       dateOfBirth: values.dateOfBirth ? format(values.dateOfBirth, "yyyy-MM-dd") : undefined,
     });
@@ -264,6 +279,20 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
                   />
                 </div>
                 
+                <FormField
+                  control={form.control}
+                  name="reportingManager"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reporting Manager</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Jane Smith" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <h3 className="text-md font-medium pt-4 border-b pb-2">Personal Information (Optional)</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -348,13 +377,27 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
                   />
                   <FormField
                     control={form.control}
-                    name="reportingManager"
+                    name="bloodGroup"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Reporting Manager</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. Jane Smith" {...field} />
-                        </FormControl>
+                        <FormLabel>Blood Group</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select blood group" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="A+">A+</SelectItem>
+                            <SelectItem value="A-">A-</SelectItem>
+                            <SelectItem value="B+">B+</SelectItem>
+                            <SelectItem value="B-">B-</SelectItem>
+                            <SelectItem value="AB+">AB+</SelectItem>
+                            <SelectItem value="AB-">AB-</SelectItem>
+                            <SelectItem value="O+">O+</SelectItem>
+                            <SelectItem value="O-">O-</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -384,34 +427,6 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
                       <FormControl>
                         <Input placeholder="e.g. New York Office / Remote" {...field} />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="bloodGroup"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Blood Group</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select blood group" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="A+">A+</SelectItem>
-                          <SelectItem value="A-">A-</SelectItem>
-                          <SelectItem value="B+">B+</SelectItem>
-                          <SelectItem value="B-">B-</SelectItem>
-                          <SelectItem value="AB+">AB+</SelectItem>
-                          <SelectItem value="AB-">AB-</SelectItem>
-                          <SelectItem value="O+">O+</SelectItem>
-                          <SelectItem value="O-">O-</SelectItem>
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -447,19 +462,63 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="bankDetails"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bank Details</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="e.g. Account Holder Name, Account Number, Bank Name, IFSC Code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div>
+                  <FormLabel>Bank Details</FormLabel>
+                  <div className="space-y-4 rounded-md border p-4 mt-2">
+                    <FormField
+                      control={form.control}
+                      name="bankDetails.accountHolderName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Account Holder Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. John Doe" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bankDetails.bankName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Bank Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. State Bank of Example" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bankDetails.accountNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Account Number</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. 1234567890" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="bankDetails.ifscCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>IFSC Code</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. SBIN0001234" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
               </div>
             )}
             </div>
@@ -469,16 +528,16 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee }: AddEmplo
                   <SheetClose asChild>
                     <Button type="button" variant="outline">Cancel</Button>
                   </SheetClose>
-                  <div className="flex gap-2">
-                    <Button type="button" variant="outline" onClick={form.handleSubmit(onSubmit)}>Save & Close</Button>
-                    <Button type="button" onClick={handleNext}>Next</Button>
-                  </div>
+                  <Button type="button" onClick={handleNext}>Next</Button>
                 </div>
               )}
               {step === 2 && (
                 <div className="flex w-full justify-between">
                   <Button type="button" variant="outline" onClick={() => setStep(1)}>Back</Button>
-                  <Button type="button" onClick={form.handleSubmit(onSubmit)}>Save Employee</Button>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={form.handleSubmit(onSubmit)}>Skip & Save</Button>
+                    <Button type="button" onClick={form.handleSubmit(onSubmit)}>Save Employee</Button>
+                  </div>
                 </div>
               )}
             </SheetFooter>

@@ -1,23 +1,28 @@
 export type Employee = {
   employeeId: string;
-  name?: string;
-  email?: string;
+  name: string;
+  email: string;
   phone?: string;
   avatar?: string;
-  department?: string;
-  role?: string;
+  department: string;
+  role: string;
   status: "Active" | "On Leave" | "Deactivated";
   joiningDate: string;
   reportingManager?: string;
   workLocation?: string;
-  employmentType?: "Full-time" | "Part-time" | "Contractor";
+  employmentType: "Full-time" | "Part-time" | "Contractor";
   gender?: "Male" | "Female" | "Other";
   dateOfBirth?: string;
   address?: string;
   bloodGroup?: string;
   aadhaarNumber?: string;
   panNumber?: string;
-  bankDetails?: string;
+  bankDetails?: {
+    accountHolderName?: string;
+    accountNumber?: string;
+    bankName?: string;
+    ifscCode?: string;
+  };
 };
 
 export type LeaveApplication = {

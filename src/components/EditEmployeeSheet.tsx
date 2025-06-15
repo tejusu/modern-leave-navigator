@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,7 +48,12 @@ const formSchema = z.object({
     bloodGroup: z.string().optional(),
     aadhaarNumber: z.string().optional(),
     panNumber: z.string().optional(),
-    bankDetails: z.string().optional(),
+    bankDetails: z.object({
+        accountHolderName: z.string().optional(),
+        bankName: z.string().optional(),
+        accountNumber: z.string().optional(),
+        ifscCode: z.string().optional(),
+    }).optional(),
 });
 
 type EditEmployeeSheetProps = {
@@ -76,13 +80,24 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                 bloodGroup: employee.bloodGroup || "",
                 aadhaarNumber: employee.aadhaarNumber || "",
                 panNumber: employee.panNumber || "",
-                bankDetails: employee.bankDetails || "",
+                bankDetails: {
+                  accountHolderName: employee.bankDetails?.accountHolderName || "",
+                  bankName: employee.bankDetails?.bankName || "",
+                  accountNumber: employee.bankDetails?.accountNumber || "",
+                  ifscCode: employee.bankDetails?.ifscCode || "",
+                },
             });
         }
     }, [employee, form, open]);
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         if (!employee) return;
+        
+        const bankDetails = values.bankDetails;
+        const finalBankDetails = (bankDetails && (bankDetails.accountHolderName || bankDetails.accountNumber || bankDetails.bankName || bankDetails.ifscCode))
+          ? bankDetails
+          : undefined;
+
         const updatedEmployee: Employee = {
             ...employee,
             ...values,
@@ -94,7 +109,7 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
             bloodGroup: values.bloodGroup || undefined,
             aadhaarNumber: values.aadhaarNumber || undefined,
             panNumber: values.panNumber || undefined,
-            bankDetails: values.bankDetails || undefined,
+            bankDetails: finalBankDetails,
         };
         onUpdateEmployee(updatedEmployee);
     };
@@ -126,7 +141,64 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                             <h3 className="text-md font-medium pt-4 border-b pb-2">Financial & Compliance Information</h3>
                             <FormField control={form.control} name="aadhaarNumber" render={({ field }) => ( <FormItem><FormLabel>Aadhaar Number</FormLabel><FormControl><Input placeholder="XXXX XXXX XXXX" {...field} /></FormControl><FormMessage /></FormItem> )} />
                             <FormField control={form.control} name="panNumber" render={({ field }) => ( <FormItem><FormLabel>PAN Number</FormLabel><FormControl><Input placeholder="ABCDE1234F" {...field} /></FormControl><FormMessage /></FormItem> )} />
-                            <FormField control={form.control} name="bankDetails" render={({ field }) => ( <FormItem><FormLabel>Bank Details</FormLabel><FormControl><Textarea placeholder="e.g. Account Holder Name, Account Number, Bank Name, IFSC Code" {...field} /></FormControl><FormMessage /></FormItem> )} />
+                            
+                            <div>
+                              <FormLabel>Bank Details</FormLabel>
+                              <div className="space-y-4 rounded-md border p-4 mt-2">
+                                <FormField
+                                  control={form.control}
+                                  name="bankDetails.accountHolderName"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-sm font-normal">Account Holder Name</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="e.g. John Doe" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="bankDetails.bankName"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-sm font-normal">Bank Name</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="e.g. State Bank of Example" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="bankDetails.accountNumber"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-sm font-normal">Account Number</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="e.g. 1234567890" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="bankDetails.ifscCode"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel className="text-sm font-normal">IFSC Code</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="e.g. SBIN0001234" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
                         </form>
                     </Form>
                 </ScrollArea>
