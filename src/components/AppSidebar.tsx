@@ -1,3 +1,4 @@
+
 import {
   Sidebar,
   SidebarContent,
@@ -37,22 +38,22 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
-        <div className="flex items-center justify-between">
-          <a href="/">
+        <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-2">
+          <a href="/" className="group-data-[collapsible=icon]:order-2">
             <img
               src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
               alt="Acelucid logo"
               className="h-8 w-auto group-data-[collapsible=icon]:hidden"
             />
              <img
-              src="/lovable-uploads/aa84d819-1e07-446e-94a4-f8503f57581e.png"
+              src="/lovable-uploads/0f388e4d-293a-4dee-ac0b-8a94b3551bef.png"
               alt="Acelucid logo"
               className="h-8 w-auto hidden group-data-[collapsible=icon]:block"
             />
           </a>
           <Button
             variant="ghost"
-            className="size-8 p-0"
+            className="size-8 p-0 group-data-[collapsible=icon]:order-1"
             onClick={toggleSidebar}
           >
             <ChevronsLeft className="size-5 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
