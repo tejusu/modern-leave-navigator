@@ -42,9 +42,22 @@ export function HolidayManagement() {
 
   const handleSaveHoliday = (holidayData: HolidayFormValues) => {
     if (selectedHoliday) {
-      setHolidays(holidays.map(h => h.id === selectedHoliday.id ? { ...h, ...holidayData } : h));
+      setHolidays(holidays.map(h => {
+        if (h.id === selectedHoliday.id) {
+          const updatedHoliday: Holiday = {
+            ...h,
+            ...holidayData,
+          };
+          return updatedHoliday;
+        }
+        return h;
+      }));
     } else {
-      setHolidays([...holidays, { ...holidayData, id: new Date().toISOString() }]);
+      const newHoliday: Holiday = {
+        ...holidayData,
+        id: new Date().toISOString(),
+      };
+      setHolidays([...holidays, newHoliday]);
     }
     setIsAddEditOpen(false);
     setSelectedHoliday(null);
