@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LeaveTypes } from "./leave-management/LeaveTypes";
 import { LeaveSettings } from "./leave-management/LeaveSettings";
 import { LeaveHistory } from "./leave-management/LeaveHistory";
+import { HolidayManagement } from "./leave-management/HolidayManagement";
 
 export default function LeaveManagement() {
   return (
@@ -14,10 +15,11 @@ export default function LeaveManagement() {
         </p>
       </header>
       <Tabs defaultValue="leave-types" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid md:grid-cols-3 lg:w-[500px]">
+        <TabsList className="grid w-full grid-cols-4 md:w-auto md:inline-grid md:grid-cols-4 lg:w-[600px]">
           <TabsTrigger value="leave-types">Leave Types</TabsTrigger>
           <TabsTrigger value="leave-settings">Leave Settings</TabsTrigger>
           <TabsTrigger value="leave-history">Leave History</TabsTrigger>
+          <TabsTrigger value="holiday-management">Holiday Management</TabsTrigger>
         </TabsList>
         <TabsContent value="leave-types" className="mt-6">
           <LeaveTypes />
@@ -27,6 +29,9 @@ export default function LeaveManagement() {
         </TabsContent>
         <TabsContent value="leave-history" className="mt-6">
           <LeaveHistory />
+        </TabsContent>
+        <TabsContent value="holiday-management" className="mt-6">
+          <HolidayManagement />
         </TabsContent>
       </Tabs>
     </div>

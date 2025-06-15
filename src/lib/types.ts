@@ -27,6 +27,9 @@ export type LeaveApplication = {
 };
 
 export type Holiday = {
-  date: string;
+  id: string;
+  date: Date;
   name: string;
+  type: "National" | "Regional" | "Optional";
+  departments?: string[];
 };
