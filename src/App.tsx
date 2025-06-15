@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,8 +15,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import { UserNav } from "./components/UserNav";
 import { NotificationBell } from "./components/NotificationBell";
-import { Menu, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Menu } from "lucide-react";
 
 const queryClient = new QueryClient();
 
@@ -37,20 +35,7 @@ const App = () => (
                     <Menu />
                   </SidebarTrigger>
                 </div>
-                <div className="flex-1 flex justify-center px-4">
-                  <div className="relative w-full max-w-md hidden md:block">
-                    <form>
-                      <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="search"
-                          placeholder="Search..."
-                          className="w-full rounded-lg bg-muted pl-8"
-                        />
-                      </div>
-                    </form>
-                  </div>
-                </div>
+                <div className="flex-1" />
                 <div className="flex items-center gap-4">
                   <NotificationBell />
                   <UserNav />

@@ -11,9 +11,9 @@ const Index = () => {
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Welcome, Admin User!</h1>
           <p className="text-muted-foreground">
-            Here's an overview of your leave management system.
+            Here's your dashboard overview.
           </p>
         </div>
         <Button>
