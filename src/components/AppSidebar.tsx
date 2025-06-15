@@ -24,7 +24,7 @@ const menuItems = [
   { icon: Users, label: "Employee Management", href: "/employee-management" },
   { icon: ClipboardList, label: "Leave Management", href: "/leave-management" },
   { icon: CalendarCheck, label: "Holiday Management", href: "/holiday-management" },
-  { icon: BarChart2, label: "Reports & Analytics", href: "#" },
+  { icon: BarChart2, label: "Reports & Analytics", href: "/reports-analytics" },
   { icon: Bell, label: "Notifications & Alerts", href: "#" },
 ];
 
