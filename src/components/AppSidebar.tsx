@@ -39,7 +39,14 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="p-4">
         <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-2">
-          <a href="/" className="group-data-[collapsible=icon]:order-2">
+          <Button
+            variant="ghost"
+            className="size-8 p-0 order-last group-data-[collapsible=icon]:order-none"
+            onClick={toggleSidebar}
+          >
+            <ChevronsLeft className="size-5 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
+          </Button>
+          <a href="/" className="order-first group-data-[collapsible=icon]:order-none">
             <img
               src="/lovable-uploads/03870ed3-19ca-4cb6-9f54-058584aa4a5a.png"
               alt="Acelucid logo"
@@ -51,13 +58,6 @@ export function AppSidebar() {
               className="h-8 w-auto hidden group-data-[collapsible=icon]:block"
             />
           </a>
-          <Button
-            variant="ghost"
-            className="size-8 p-0 group-data-[collapsible=icon]:order-1"
-            onClick={toggleSidebar}
-          >
-            <ChevronsLeft className="size-5 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
-          </Button>
         </div>
       </SidebarHeader>
       <SidebarContent className="flex-grow">
