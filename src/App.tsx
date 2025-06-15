@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import EmployeeManagement from "./pages/EmployeeManagement";
 import LeaveManagement from "./pages/LeaveManagement";
+import HolidayManagementPage from "./pages/HolidayManagementPage";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
@@ -39,6 +40,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/employee-management" element={<EmployeeManagement />} />
                   <Route path="/leave-management" element={<LeaveManagement />} />
+                  <Route path="/holiday-management" element={<HolidayManagementPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
