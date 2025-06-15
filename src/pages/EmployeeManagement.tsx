@@ -154,36 +154,12 @@ const EmployeeManagement = () => {
   const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const handleAddEmployee = (newEmployeeData: Partial<Omit<Employee, "employeeId" | "status" | "avatar">>) => {
-    if (!newEmployeeData.name || !newEmployeeData.email || !newEmployeeData.department || !newEmployeeData.role || !newEmployeeData.joiningDate || !newEmployeeData.employmentType) {
-      toast({
-        title: "Error",
-        description: "Could not add employee. Required fields are missing.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleAddEmployee = (newEmployeeData: Omit<Employee, "employeeId" | "status" | "avatar">) => {
     const newEmployeeId = generateEmployeeId(newEmployeeData.employmentType, employees);
 
     const newEmployee: Employee = {
+      ...newEmployeeData,
       employeeId: newEmployeeId,
-      name: newEmployeeData.name,
-      email: newEmployeeData.email,
-      department: newEmployeeData.department,
-      role: newEmployeeData.role,
-      joiningDate: newEmployeeData.joiningDate,
-      phone: newEmployeeData.phone,
-      employmentType: newEmployeeData.employmentType,
-      address: newEmployeeData.address,
-      dateOfBirth: newEmployeeData.dateOfBirth,
-      gender: newEmployeeData.gender,
-      reportingManager: newEmployeeData.reportingManager,
-      workLocation: newEmployeeData.workLocation,
-      bloodGroup: newEmployeeData.bloodGroup,
-      aadhaarNumber: newEmployeeData.aadhaarNumber,
-      panNumber: newEmployeeData.panNumber,
-      bankDetails: newEmployeeData.bankDetails,
       status: "Active",
       avatar: "/placeholder.svg",
     };
