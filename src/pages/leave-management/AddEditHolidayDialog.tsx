@@ -29,18 +29,18 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const holidaySchema = z.object({
+export const holidaySchema = z.object({
   name: z.string().min(1, { message: "Holiday name is required." }),
   date: z.date({ required_error: "A date is required." }),
   type: z.enum(["National", "Regional", "Optional"]),
 });
 
-type HolidayFormValues = z.infer<typeof holidaySchema>;
+export type HolidayFormValues = z.infer<typeof holidaySchema>;
 
 interface AddEditHolidayDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (holiday: Omit<Holiday, 'id'>) => void;
+  onSave: (holiday: HolidayFormValues) => void;
   holiday: Holiday | null;
 }
 

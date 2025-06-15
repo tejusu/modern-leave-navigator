@@ -5,7 +5,7 @@ import { PlusCircle } from "lucide-react";
 import { Holiday } from "@/lib/types";
 import { HolidayCalendar } from "./HolidayCalendar";
 import { HolidayList } from "./HolidayList";
-import { AddEditHolidayDialog } from "./AddEditHolidayDialog";
+import { AddEditHolidayDialog, HolidayFormValues } from "./AddEditHolidayDialog";
 import { DeleteHolidayDialog } from "./DeleteHolidayDialog";
 
 const initialHolidays: Holiday[] = [
@@ -40,9 +40,9 @@ export function HolidayManagement() {
     setIsDeleteOpen(true);
   };
 
-  const handleSaveHoliday = (holidayData: Omit<Holiday, 'id' | 'departments'> & {departments?: string[]}) => {
+  const handleSaveHoliday = (holidayData: HolidayFormValues) => {
     if (selectedHoliday) {
-      setHolidays(holidays.map(h => h.id === selectedHoliday.id ? { ...selectedHoliday, ...holidayData } : h));
+      setHolidays(holidays.map(h => h.id === selectedHoliday.id ? { ...h, ...holidayData } : h));
     } else {
       setHolidays([...holidays, { ...holidayData, id: new Date().toISOString() }]);
     }
