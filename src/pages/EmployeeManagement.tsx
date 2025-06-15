@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PlusCircle, Upload, MoreHorizontal, Search, Filter } from "lucide-react";
+import { PlusCircle, Upload, MoreHorizontal, Search, Filter, AlertTriangle } from "lucide-react";
 import { Employee } from "@/lib/types";
 import { AddEmployeeSheet } from "@/components/AddEmployeeSheet";
 import { BulkImportDialog } from "@/components/BulkImportDialog";
@@ -29,6 +29,7 @@ import { EmployeeProfileSheet } from "@/components/EmployeeProfileSheet";
 import { EditEmployeeSheet } from "@/components/EditEmployeeSheet";
 import { DeleteConfirmationDialog } from "@/components/DeleteConfirmationDialog";
 import { useToast } from "@/components/ui/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Mock data for employees
 const initialEmployees: Employee[] = [
@@ -228,6 +229,19 @@ const EmployeeManagement = () => {
     );
   };
 
+  const isPersonalDetailsIncomplete = (employee: Employee): boolean => {
+    return !employee.gender || !employee.dateOfBirth || !employee.address || !employee.bloodGroup;
+  };
+
+  const isFinancialDetailsIncomplete = (employee: Employee): boolean => {
+    const hasBankDetails = employee.bankDetails && 
+      (employee.bankDetails.accountHolderName || 
+       employee.bankDetails.accountNumber || 
+       employee.bankDetails.bankName || 
+       employee.bankDetails.ifscCode);
+    return !employee.aadhaarNumber && !employee.panNumber && !hasBankDetails;
+  };
+
   return (
     <>
       <div className="p-4 sm:p-6 lg:p-8 space-y-8 animate-fade-in">
@@ -324,7 +338,21 @@ const EmployeeManagement = () => {
                             <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <div className="font-medium">{employee.name}</div>
+                            <div className="font-medium flex items-center gap-2">
+                              {employee.name}
+                              {(isPersonalDetailsIncomplete(employee) || isFinancialDetailsIncomplete(employee)) && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Incomplete profile details.</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+                            </div>
                             <div className="text-sm text-muted-foreground">{employee.email}</div>
                           </div>
                         </div>
