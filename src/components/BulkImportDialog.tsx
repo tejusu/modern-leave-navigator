@@ -62,7 +62,7 @@ export function BulkImportDialog({ open, onOpenChange }: BulkImportDialogProps) 
         handleClearFile();
       }
     }}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Bulk Import Employees</DialogTitle>
           <DialogDescription>
@@ -70,15 +70,15 @@ export function BulkImportDialog({ open, onOpenChange }: BulkImportDialogProps) 
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-2">
+        <div className="space-y-4 py-2">
           <div>
             <h4 className="font-medium text-md mb-2">File Format Instructions</h4>
-            <div className="p-4 bg-muted/50 rounded-lg text-sm space-y-3">
+            <div className="p-4 bg-muted/50 rounded-lg text-sm space-y-3 max-h-48 overflow-y-auto">
                <p>Your CSV file should contain a header row with column names that match the fields below. The order of columns does not matter.</p>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                   <div>
                      <h5 className="font-semibold">Required Columns:</h5>
-                     <ul className="list-disc list-inside text-muted-foreground">
+                     <ul className="list-disc list-inside text-muted-foreground text-xs">
                         <li><code>name</code> (Text)</li>
                         <li><code>email</code> (Email format)</li>
                         <li><code>department</code> (Text)</li>
@@ -89,7 +89,7 @@ export function BulkImportDialog({ open, onOpenChange }: BulkImportDialogProps) 
                   </div>
                   <div>
                      <h5 className="font-semibold">Optional Columns:</h5>
-                      <ul className="list-disc list-inside text-muted-foreground">
+                      <ul className="list-disc list-inside text-muted-foreground text-xs">
                         <li><code>phone</code> (Text)</li>
                         <li><code>reportingManager</code> (Full name of an existing employee)</li>
                         <li><code>workLocation</code> (Text)</li>
@@ -106,21 +106,21 @@ export function BulkImportDialog({ open, onOpenChange }: BulkImportDialogProps) 
             </div>
           </div>
           <div className="flex items-center justify-center w-full">
-            <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted/80 relative transition-colors">
+            <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-background hover:bg-muted/80 relative transition-colors">
               {selectedFile ? (
                 <div className="text-center p-4">
-                  <FileText className="w-10 h-10 mx-auto mb-3 text-primary" />
-                  <p className="font-semibold text-foreground">{selectedFile.name}</p>
+                  <FileText className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <p className="font-semibold text-foreground text-sm">{selectedFile.name}</p>
                   <p className="text-xs text-muted-foreground">{(selectedFile.size / 1024).toFixed(2)} KB</p>
-                  <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7 rounded-full" onClick={(e) => { e.preventDefault(); handleClearFile(); }}>
-                    <X className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="absolute top-1 right-1 h-6 w-6 rounded-full" onClick={(e) => { e.preventDefault(); handleClearFile(); }}>
+                    <X className="h-3 w-3" />
                     <span className="sr-only">Clear file</span>
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
-                  <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
+                <div className="flex flex-col items-center justify-center pt-3 pb-4">
+                  <Upload className="w-6 h-6 mb-2 text-muted-foreground" />
+                  <p className="mb-1 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
                   <p className="text-xs text-muted-foreground">CSV file (MAX. 5MB)</p>
                 </div>
               )}

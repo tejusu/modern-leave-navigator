@@ -20,7 +20,7 @@ const Index = () => {
             Here's what's happening with your team today.
           </p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 shadow-lg">
+        <Button className="bg-red-600 hover:bg-red-700 shadow-lg">
           <PlusCircle className="mr-2 h-4 w-4" />
           Add New Employee
         </Button>

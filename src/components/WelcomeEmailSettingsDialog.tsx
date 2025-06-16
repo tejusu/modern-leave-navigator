@@ -63,7 +63,7 @@ export function WelcomeEmailSettingsDialog({ open, onOpenChange }: WelcomeEmailS
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Welcome Email Template</DialogTitle>
           <DialogDescription>
@@ -71,7 +71,7 @@ export function WelcomeEmailSettingsDialog({ open, onOpenChange }: WelcomeEmailS
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} id="welcome-email-form" className="space-y-6 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} id="welcome-email-form" className="space-y-4 py-2">
             <FormField
               control={form.control}
               name="subject"
@@ -92,7 +92,7 @@ export function WelcomeEmailSettingsDialog({ open, onOpenChange }: WelcomeEmailS
                 <FormItem>
                   <FormLabel>Email Body</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Enter email body" className="min-h-[250px]" {...field} />
+                    <Textarea placeholder="Enter email body" className="min-h-[200px] resize-none" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
