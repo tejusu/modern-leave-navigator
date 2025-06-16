@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { FileText, Calendar, Clock, Shield } from "lucide-react";
 import { SandwichLeavePolicyDialog } from "./SandwichLeavePolicyDialog";
+import { CompOffPolicyDialog } from "./CompOffPolicyDialog";
+import { HalfDayLeavePolicyDialog } from "./HalfDayLeavePolicyDialog";
 
 const policyGroups = [
   {
@@ -32,6 +34,16 @@ const policyGroups = [
         name: "Emergency Leave Policy", 
         description: "Configure rules for emergency or short-notice leave applications.",
         type: "emergency-leave"
+      },
+      { 
+        name: "Compensatory Off (Comp-Off)", 
+        description: "Set rules for comp-off generation and utilization periods.",
+        type: "comp-off"
+      },
+      { 
+        name: "Half-Day Leave Policy", 
+        description: "Configure half-day leave options for CL/SL types.",
+        type: "half-day-leave"
       },
     ],
   },
@@ -115,6 +127,24 @@ export function LeavePolicy() {
 
       <SandwichLeavePolicyDialog
         open={selectedPolicy === "sandwich-leave"}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPolicy(null);
+          }
+        }}
+      />
+
+      <CompOffPolicyDialog
+        open={selectedPolicy === "comp-off"}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPolicy(null);
+          }
+        }}
+      />
+
+      <HalfDayLeavePolicyDialog
+        open={selectedPolicy === "half-day-leave"}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedPolicy(null);
