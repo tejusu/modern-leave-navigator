@@ -36,12 +36,12 @@ export function AppSidebar() {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="p-4">
+    <Sidebar collapsible="icon" className="border-r border-gray-200/50 dark:border-gray-800/50">
+      <SidebarHeader className="p-4 border-b border-gray-200/50 dark:border-gray-800/50">
         <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-2">
           <Button
             variant="ghost"
-            className="size-8 p-0 order-last group-data-[collapsible=icon]:order-none"
+            className="size-8 p-0 order-last group-data-[collapsible=icon]:order-none hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={toggleSidebar}
           >
             <ChevronsLeft className="size-5 shrink-0 transition-transform duration-300 group-data-[collapsible=icon]:rotate-180" />
@@ -60,27 +60,33 @@ export function AppSidebar() {
           </a>
         </div>
       </SidebarHeader>
-      <SidebarContent className="flex-grow">
-        <SidebarMenu>
+      <SidebarContent className="flex-grow px-2 py-4">
+        <SidebarMenu className="space-y-1">
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton asChild>
-                <a href={item.href}>
-                  <item.icon />
-                  <span>{item.label}</span>
+              <SidebarMenuButton 
+                asChild 
+                className="w-full justify-start px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 group-data-[collapsible=icon]:justify-center"
+              >
+                <a href={item.href} className="flex items-center gap-3">
+                  <item.icon className="size-5 shrink-0" />
+                  <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4">
+      <SidebarFooter className="p-4 border-t border-gray-200/50 dark:border-gray-800/50">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href={settingsItem.href}>
-                <settingsItem.icon />
-                <span>{settingsItem.label}</span>
+            <SidebarMenuButton 
+              asChild
+              className="w-full justify-start px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-800 group-data-[collapsible=icon]:justify-center"
+            >
+              <a href={settingsItem.href} className="flex items-center gap-3">
+                <settingsItem.icon className="size-5 shrink-0" />
+                <span className="group-data-[collapsible=icon]:hidden">{settingsItem.label}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

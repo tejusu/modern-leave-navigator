@@ -6,34 +6,19 @@ import { FileText, Calendar, Clock, Shield } from "lucide-react";
 import { SandwichLeavePolicyDialog } from "./SandwichLeavePolicyDialog";
 import { CompOffPolicyDialog } from "./CompOffPolicyDialog";
 import { HalfDayLeavePolicyDialog } from "./HalfDayLeavePolicyDialog";
+import { AdvanceNoticeDialog } from "./AdvanceNoticeDialog";
+import { BlackoutPeriodsDialog } from "./BlackoutPeriodsDialog";
 
 const policyGroups = [
   {
     icon: Calendar,
-    title: "Sandwich Leave Policy",
-    description: "Configure rules for leave applications before and after weekends/holidays.",
-    items: [
-      { 
-        name: "Sandwich Leave Rules", 
-        description: "Set advance notice requirements and counting rules for sandwich leaves.",
-        type: "sandwich-leave"
-      },
-    ],
-  },
-  {
-    icon: Clock,
     title: "Leave Application Policies",
     description: "Set rules for leave application timing and approval workflows.",
     items: [
       { 
-        name: "Advance Notice Requirements", 
-        description: "Define minimum advance notice periods for different leave types.",
-        type: "advance-notice"
-      },
-      { 
-        name: "Emergency Leave Policy", 
-        description: "Configure rules for emergency or short-notice leave applications.",
-        type: "emergency-leave"
+        name: "Sandwich Leave Policy", 
+        description: "Configure rules for leave applications before and after weekends/holidays.",
+        type: "sandwich-leave"
       },
       { 
         name: "Compensatory Off (Comp-Off)", 
@@ -44,6 +29,11 @@ const policyGroups = [
         name: "Half-Day Leave Policy", 
         description: "Configure half-day leave options for CL/SL types.",
         type: "half-day-leave"
+      },
+      { 
+        name: "Advance Notice Requirements", 
+        description: "Define minimum advance notice periods for different leave types.",
+        type: "advance-notice"
       },
     ],
   },
@@ -61,23 +51,6 @@ const policyGroups = [
         name: "Consecutive Leave Limits", 
         description: "Set maximum consecutive leave days allowed.",
         type: "consecutive-limits"
-      },
-    ],
-  },
-  {
-    icon: FileText,
-    title: "Documentation Policies",
-    description: "Configure documentation requirements for leave applications.",
-    items: [
-      { 
-        name: "Medical Certificate Requirements", 
-        description: "Define when medical certificates are required for sick leave.",
-        type: "medical-certificate"
-      },
-      { 
-        name: "Supporting Document Rules", 
-        description: "Configure document requirements for different leave types.",
-        type: "supporting-documents"
       },
     ],
   },
@@ -145,6 +118,24 @@ export function LeavePolicy() {
 
       <HalfDayLeavePolicyDialog
         open={selectedPolicy === "half-day-leave"}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPolicy(null);
+          }
+        }}
+      />
+
+      <AdvanceNoticeDialog
+        open={selectedPolicy === "advance-notice"}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedPolicy(null);
+          }
+        }}
+      />
+
+      <BlackoutPeriodsDialog
+        open={selectedPolicy === "blackout-periods"}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedPolicy(null);

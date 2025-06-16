@@ -11,24 +11,24 @@ export default function LeaveManagement() {
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Leave Management</h1>
         <p className="text-muted-foreground">
-          Manage leave types, settings, policies, and view history.
+          Manage leave types, policies, settings, and view history.
         </p>
       </header>
-      <Tabs defaultValue="leave-types" className="w-full">
+      <Tabs defaultValue="leave-policy" className="w-full">
         <TabsList className="grid w-full grid-cols-4 md:w-auto md:inline-grid md:grid-cols-4 lg:w-[600px]">
+          <TabsTrigger value="leave-policy">Leave Policy</TabsTrigger>
           <TabsTrigger value="leave-types">Leave Types</TabsTrigger>
           <TabsTrigger value="leave-settings">Leave Settings</TabsTrigger>
-          <TabsTrigger value="leave-policy">Leave Policy</TabsTrigger>
           <TabsTrigger value="leave-history">Leave History</TabsTrigger>
         </TabsList>
+        <TabsContent value="leave-policy" className="mt-6">
+          <LeavePolicy />
+        </TabsContent>
         <TabsContent value="leave-types" className="mt-6">
           <LeaveTypes />
         </TabsContent>
         <TabsContent value="leave-settings" className="mt-6">
           <LeaveSettings />
-        </TabsContent>
-        <TabsContent value="leave-policy" className="mt-6">
-          <LeavePolicy />
         </TabsContent>
         <TabsContent value="leave-history" className="mt-6">
           <LeaveHistory />
