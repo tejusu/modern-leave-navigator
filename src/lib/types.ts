@@ -62,6 +62,7 @@ export interface LeaveApplication {
   leaveType: string;
   startDate: string;
   endDate: string;
+  days: number;
   status: "Pending" | "Approved" | "Rejected";
   reason?: string;
 }
@@ -84,4 +85,12 @@ export interface CalendarEvent {
   date: string;
   type: "holiday" | "leave" | "event";
   description?: string;
+}
+
+export interface Holiday {
+  id: string;
+  name: string;
+  date: Date;
+  type: "General Holiday" | "Restricted Holiday";
+  departments?: string[];
 }

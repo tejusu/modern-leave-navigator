@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +43,7 @@ export function EditEmployeeSheet({ open, onOpenChange, employee, onUpdateEmploy
                 reportingManager: employee.reportingManager || "",
                 workLocation: employee.workLocation || "",
                 address: employee.address || "",
-                bloodGroup: employee.bloodGroup || "",
+                bloodGroup: employee.bloodGroup || undefined,
                 aadhaarNumber: employee.aadhaarNumber || "",
                 panNumber: employee.panNumber || "",
                 bankDetails: {
