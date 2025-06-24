@@ -13,10 +13,10 @@ import { LeaveApplication } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const applications: LeaveApplication[] = [
-  { id: "1", leaveType: "Annual Leave", startDate: "2025-07-20", endDate: "2025-07-25", days: 5, status: "Approved" },
-  { id: "2", leaveType: "Sick Leave", startDate: "2025-06-10", endDate: "2025-06-10", days: 1, status: "Approved" },
-  { id: "3", leaveType: "Casual Leave", startDate: "2025-08-01", endDate: "2025-08-02", days: 2, status: "Pending" },
-  { id: "4", leaveType: "Annual Leave", startDate: "2025-05-15", endDate: "2025-05-16", days: 2, status: "Rejected" },
+  { id: "1", employeeName: "John Doe", leaveType: "Annual Leave", startDate: "2025-07-20", endDate: "2025-07-25", days: 5, status: "Approved" },
+  { id: "2", employeeName: "Jane Smith", leaveType: "Sick Leave", startDate: "2025-06-10", endDate: "2025-06-10", days: 1, status: "Approved" },
+  { id: "3", employeeName: "Mike Johnson", leaveType: "Casual Leave", startDate: "2025-08-01", endDate: "2025-08-02", days: 2, status: "Pending" },
+  { id: "4", employeeName: "Sarah Wilson", leaveType: "Annual Leave", startDate: "2025-05-15", endDate: "2025-05-16", days: 2, status: "Rejected" },
 ];
 
 const statusColors: Record<LeaveApplication["status"], string> = {
@@ -36,6 +36,7 @@ export function RecentApplications() {
             <Table>
                 <TableHeader>
                 <TableRow>
+                    <TableHead>Employee Name</TableHead>
                     <TableHead>Leave Type</TableHead>
                     <TableHead>Start Date</TableHead>
                     <TableHead>End Date</TableHead>
@@ -46,7 +47,8 @@ export function RecentApplications() {
                 <TableBody>
                 {applications.map((app) => (
                     <TableRow key={app.id}>
-                    <TableCell className="font-medium">{app.leaveType}</TableCell>
+                    <TableCell className="font-medium">{app.employeeName}</TableCell>
+                    <TableCell>{app.leaveType}</TableCell>
                     <TableCell>{app.startDate}</TableCell>
                     <TableCell>{app.endDate}</TableCell>
                     <TableCell className="text-right">{app.days}</TableCell>

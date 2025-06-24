@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,7 +54,18 @@ export function AddAdminForm({ onSubmit }: AddAdminFormProps) {
   });
 
   const handleSubmit = (values: AdminFormValues) => {
-    onSubmit(values);
+    // Transform form values to match Admin interface requirements
+    const adminData: Omit<Admin, "adminId"> = {
+      name: values.name,
+      email: values.email,
+      status: values.status,
+      role: values.role,
+      phone: values.phone || undefined,
+      department: values.department || undefined,
+      avatar: values.avatar || undefined,
+    };
+    
+    onSubmit(adminData);
     form.reset();
   };
 
