@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { UseFormReturn } from "react-hook-form";
 import {
@@ -20,12 +19,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { EmployeeFormValues } from "./schema";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Employee } from "@/lib/types";
+import { ProfilePictureUpload } from "../ProfilePictureUpload";
 
 type EmployeeDetailsFormProps = {
   form: UseFormReturn<EmployeeFormValues>;
@@ -38,6 +39,27 @@ export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProp
 
   return (
     <>
+      {/* Profile Picture Section */}
+      <div className="flex flex-col items-center space-y-4 pb-6 border-b">
+        <FormField
+          control={form.control}
+          name="avatar"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-center">
+              <FormLabel>Profile Picture (Optional)</FormLabel>
+              <FormControl>
+                <ProfilePictureUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  size="lg"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={form.control}
@@ -224,6 +246,32 @@ export function EmployeeDetailsForm({ form, employees }: EmployeeDetailsFormProp
           </FormItem>
         )}
       />
+
+      {/* Admin Access Toggle */}
+      <div className="border rounded-lg p-4 space-y-3">
+        <FormField
+          control={form.control}
+          name="isAdmin"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base font-medium">
+                  Also assign Admin access to this employee
+                </FormLabel>
+                <p className="text-sm text-muted-foreground">
+                  This employee will have administrative privileges in the system
+                </p>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </div>
 
       <h3 className="text-md font-medium pt-4 border-b pb-2">Personal Information (Optional)</h3>
 
