@@ -6,6 +6,7 @@ import { AdminTableFilters } from "@/components/admin-management/AdminTableFilte
 import { AdminTable } from "@/components/admin-management/AdminTable";
 import { AssignAdminDialog } from "@/components/admin-management/AssignAdminDialog";
 import { useAdminManagement } from "@/hooks/useAdminManagement";
+import { Admin } from "@/lib/types";
 
 const AdminManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
