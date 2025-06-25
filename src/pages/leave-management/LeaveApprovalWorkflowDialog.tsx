@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -105,6 +106,9 @@ export function LeaveApprovalWorkflowDialog({
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Approval Level</CardTitle>
+                <CardDescription>
+                  Configure how leave applications are approved in your organization
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -133,6 +137,9 @@ export function LeaveApprovalWorkflowDialog({
                   <Card className="mt-4">
                     <CardHeader>
                       <CardTitle className="text-base">Single-Level Configuration</CardTitle>
+                      <CardDescription>
+                        Define a single approver with optional backup for leave applications
+                      </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <FormField
@@ -220,7 +227,7 @@ export function LeaveApprovalWorkflowDialog({
                     <CardHeader>
                       <CardTitle className="text-base">Multi-Level Configuration</CardTitle>
                       <CardDescription>
-                        Define the approval chain with escalation timelines
+                        Define the approval chain with escalation timelines for each level
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
