@@ -1,5 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,355 +12,297 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Clock, Calendar, CheckCircle, Sun, Moon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { Clock, CheckCircle, Info } from "lucide-react";
+
+const halfDayPolicySchema = z.object({
+  enabled: z.boolean().default(true),
+  applicableLeaveTypes: z.array(z.string()).min(1, "Select at least one leave type"),
+  firstHalfEnabled: z.boolean().default(true),
+  secondHalfEnabled: z.boolean().default(true),
+  deductionAmount: z.literal(0.5),
+});
+
+type HalfDayPolicyFormValues = z.infer<typeof halfDayPolicySchema>;
 
 interface HalfDayLeavePolicyDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function HalfDayLeavePolicyDialog({ open, onOpenChange }: HalfDayLeavePolicyDialogProps) {
-  const [settings, setSettings] = useState({
+const leaveTypes = [
+  { id: "casual-leave", label: "Casual Leave" },
+  { id: "sick-leave", label: "Sick Leave" },
+  { id: "annual-leave", label: "Annual Leave" },
+  { id: "personal-leave", label: "Personal Leave" },
+];
+
+const getHalfDayPolicySettings = (): HalfDayPolicyFormValues => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem("halfDayLeavePolicy");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse half-day leave policy from localStorage", e);
+      }
+    }
+  }
+  return {
     enabled: true,
-    allowedLeaveTypes: ["CL", "SL"],
+    applicableLeaveTypes: ["casual-leave", "sick-leave"],
     firstHalfEnabled: true,
     secondHalfEnabled: true,
-    firstHalfTiming: "9:00 AM - 1:00 PM",
-    secondHalfTiming: "2:00 PM - 6:00 PM",
-    deductionMethod: "0.5", // 0.5 day deduction
-    combinationRules: true, // allow combining with full day leaves
-    advanceNotice: "1", // days
-    approvalRequired: false,
+    deductionAmount: 0.5,
+  };
+};
+
+const saveHalfDayPolicySettings = (settings: HalfDayPolicyFormValues) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem("halfDayLeavePolicy", JSON.stringify(settings));
+  }
+};
+
+export function HalfDayLeavePolicyDialog({ open, onOpenChange }: HalfDayLeavePolicyDialogProps) {
+  const form = useForm<HalfDayPolicyFormValues>({
+    resolver: zodResolver(halfDayPolicySchema),
+    defaultValues: getHalfDayPolicySettings(),
   });
 
-  const handleLeaveTypeChange = (leaveType: string, checked: boolean) => {
-    setSettings(prev => ({
-      ...prev,
-      allowedLeaveTypes: checked 
-        ? [...prev.allowedLeaveTypes, leaveType]
-        : prev.allowedLeaveTypes.filter(type => type !== leaveType)
-    }));
-  };
+  useEffect(() => {
+    if (open) {
+      form.reset(getHalfDayPolicySettings());
+    }
+  }, [open, form]);
 
-  const handleSave = () => {
-    localStorage.setItem('halfDayLeavePolicy', JSON.stringify(settings));
-    console.log('Half-Day Leave Policy saved:', settings);
+  function onSubmit(data: HalfDayPolicyFormValues) {
+    saveHalfDayPolicySettings(data);
+    toast.success("Half-Day Leave Policy Updated", {
+      description: "Your half-day leave policy settings have been saved successfully.",
+    });
     onOpenChange(false);
-  };
+  }
+
+  const watchedValues = form.watch();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
-            Half-Day Leave Policy
-          </DialogTitle>
+          <DialogTitle>Half-Day Leave Policy</DialogTitle>
           <DialogDescription>
-            Configure half-day leave options for different leave types and set timing rules.
+            Configure half-day leave options for different leave types and time slots.
           </DialogDescription>
         </DialogHeader>
+        
+        <div className="space-y-6 py-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} id="half-day-policy-form" className="space-y-6">
+              <FormField
+                control={form.control}
+                name="enabled"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Enable Half-Day Leave</FormLabel>
+                      <FormDescription>
+                        Allow employees to apply for half-day leave for selected leave types
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Settings Panel */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Basic Settings</CardTitle>
-                <CardDescription>Configure core half-day leave settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="half-day-enabled">Enable Half-Day Leave</Label>
-                  <Switch
-                    id="half-day-enabled"
-                    checked={settings.enabled}
-                    onCheckedChange={(checked) => 
-                      setSettings(prev => ({ ...prev, enabled: checked }))
-                    }
-                  />
-                </div>
+              {watchedValues.enabled && (
+                <>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Applicable Leave Types</CardTitle>
+                      <CardDescription>
+                        Select which leave types support half-day leave options
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <FormField
+                        control={form.control}
+                        name="applicableLeaveTypes"
+                        render={() => (
+                          <FormItem>
+                            <div className="grid grid-cols-2 gap-4">
+                              {leaveTypes.map((leaveType) => (
+                                <FormField
+                                  key={leaveType.id}
+                                  control={form.control}
+                                  name="applicableLeaveTypes"
+                                  render={({ field }) => {
+                                    return (
+                                      <FormItem
+                                        key={leaveType.id}
+                                        className="flex flex-row items-start space-x-3 space-y-0"
+                                      >
+                                        <FormControl>
+                                          <Checkbox
+                                            checked={field.value?.includes(leaveType.id)}
+                                            onCheckedChange={(checked) => {
+                                              return checked
+                                                ? field.onChange([...field.value, leaveType.id])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                      (value) => value !== leaveType.id
+                                                    )
+                                                  )
+                                            }}
+                                          />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                          {leaveType.label}
+                                        </FormLabel>
+                                      </FormItem>
+                                    )
+                                  }}
+                                />
+                              ))}
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
 
-                <div className="space-y-3">
-                  <Label>Allowed Leave Types</Label>
-                  <div className="space-y-2">
-                    {["CL", "SL", "PL", "ML"].map((leaveType) => (
-                      <div key={leaveType} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={leaveType}
-                          checked={settings.allowedLeaveTypes.includes(leaveType)}
-                          onCheckedChange={(checked) => 
-                            handleLeaveTypeChange(leaveType, checked as boolean)
-                          }
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Time Slot Configuration</CardTitle>
+                      <CardDescription>
+                        Define available time slots for half-day leave applications
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="firstHalfEnabled"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                              <div className="space-y-0.5">
+                                <FormLabel>First Half</FormLabel>
+                                <FormDescription className="text-xs">
+                                  9:00 AM - 1:00 PM
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
                         />
-                        <Label htmlFor={leaveType} className="text-sm">
-                          {leaveType === "CL" && "Casual Leave (CL)"}
-                          {leaveType === "SL" && "Sick Leave (SL)"}
-                          {leaveType === "PL" && "Privilege Leave (PL)"}
-                          {leaveType === "ML" && "Maternity Leave (ML)"}
-                        </Label>
+
+                        <FormField
+                          control={form.control}
+                          name="secondHalfEnabled"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                              <div className="space-y-0.5">
+                                <FormLabel>Second Half</FormLabel>
+                                <FormDescription className="text-xs">
+                                  2:00 PM - 6:00 PM
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </CardContent>
+                  </Card>
 
-                <div className="space-y-2">
-                  <Label>Deduction Method</Label>
-                  <Select
-                    value={settings.deductionMethod}
-                    onValueChange={(value) => 
-                      setSettings(prev => ({ ...prev, deductionMethod: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0.5">0.5 day deduction</SelectItem>
-                      <SelectItem value="1">1 full day deduction</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Advance Notice Required</Label>
-                  <Select
-                    value={settings.advanceNotice}
-                    onValueChange={(value) => 
-                      setSettings(prev => ({ ...prev, advanceNotice: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">Same day</SelectItem>
-                      <SelectItem value="1">1 day</SelectItem>
-                      <SelectItem value="2">2 days</SelectItem>
-                      <SelectItem value="3">3 days</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Timing Configuration</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="first-half">Enable First Half</Label>
-                    <Switch
-                      id="first-half"
-                      checked={settings.firstHalfEnabled}
-                      onCheckedChange={(checked) => 
-                        setSettings(prev => ({ ...prev, firstHalfEnabled: checked }))
-                      }
-                    />
-                  </div>
-                  {settings.firstHalfEnabled && (
-                    <div className="ml-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Sun className="w-4 h-4 text-orange-600" />
-                        <span className="text-sm font-medium text-orange-800">First Half Timing</span>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Leave Balance Deduction</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-2 p-4 bg-blue-50 rounded-lg">
+                        <Info className="h-4 w-4 text-blue-500" />
+                        <span className="text-sm">
+                          <strong>0.5 days</strong> will be deducted from the employee's leave balance for each half-day leave application.
+                        </span>
                       </div>
-                      <p className="text-sm text-orange-700">{settings.firstHalfTiming}</p>
+                    </CardContent>
+                  </Card>
+                </>
+              )}
+            </form>
+          </Form>
+
+          {watchedValues.enabled && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Application Example</h3>
+              
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    Half-Day Leave Application Flow
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-xs space-y-2">
+                    <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span>1. Employee selects leave type</span>
+                      <Badge variant="outline">Casual Leave ✓</Badge>
                     </div>
-                  )}
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="second-half">Enable Second Half</Label>
-                    <Switch
-                      id="second-half"
-                      checked={settings.secondHalfEnabled}
-                      onCheckedChange={(checked) => 
-                        setSettings(prev => ({ ...prev, secondHalfEnabled: checked }))
-                      }
-                    />
-                  </div>
-                  {settings.secondHalfEnabled && (
-                    <div className="ml-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Moon className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-800">Second Half Timing</span>
-                      </div>
-                      <p className="text-sm text-blue-700">{settings.secondHalfTiming}</p>
+                    <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span>2. Half-day option appears</span>
+                      <Badge variant="outline">Checkbox shown ✓</Badge>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Advanced Options</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="combination-rules">Allow Combination</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Allow combining half-day with full-day leaves
-                    </p>
-                  </div>
-                  <Switch
-                    id="combination-rules"
-                    checked={settings.combinationRules}
-                    onCheckedChange={(checked) => 
-                      setSettings(prev => ({ ...prev, combinationRules: checked }))
-                    }
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="approval-required">Approval Required</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Require manager approval for half-day leaves
-                    </p>
-                  </div>
-                  <Switch
-                    id="approval-required"
-                    checked={settings.approvalRequired}
-                    onCheckedChange={(checked) => 
-                      setSettings(prev => ({ ...prev, approvalRequired: checked }))
-                    }
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Preview Panel */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Policy Preview
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-green-800">Available Options</p>
-                      <p className="text-xs text-green-700">
-                        Half-day leave available for: {settings.allowedLeaveTypes.join(", ")}
-                      </p>
+                    <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span>3. Time slot selection</span>
+                      <Badge variant="outline">First/Second Half ✓</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-2 bg-green-50 rounded">
+                      <span>4. Balance deduction</span>
+                      <Badge className="bg-green-100 text-green-800">0.5 days ✓</Badge>
                     </div>
                   </div>
-
-                  <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-blue-800">Deduction Rule</p>
-                      <p className="text-xs text-blue-700">
-                        {settings.deductionMethod} day will be deducted from leave balance per half-day.
-                      </p>
-                    </div>
-                  </div>
-
-                  {settings.advanceNotice !== "0" && (
-                    <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                      <Calendar className="w-5 h-5 text-amber-600 mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-amber-800">Advance Notice</p>
-                        <p className="text-xs text-amber-700">
-                          {settings.advanceNotice} day(s) advance notice required.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Half-Day Options</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {settings.firstHalfEnabled && (
-                    <div className="p-3 border border-orange-200 rounded-lg bg-orange-50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Sun className="w-4 h-4 text-orange-600" />
-                        <span className="font-medium text-orange-800">First Half</span>
-                      </div>
-                      <p className="text-sm text-orange-700">{settings.firstHalfTiming}</p>
-                      <p className="text-xs text-orange-600 mt-1">
-                        Employee can take leave during morning hours
-                      </p>
-                    </div>
-                  )}
-
-                  {settings.secondHalfEnabled && (
-                    <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Moon className="w-4 h-4 text-blue-600" />
-                        <span className="font-medium text-blue-800">Second Half</span>
-                      </div>
-                      <p className="text-sm text-blue-700">{settings.secondHalfTiming}</p>
-                      <p className="text-xs text-blue-600 mt-1">
-                        Employee can take leave during afternoon hours
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Example Application</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="grid grid-cols-2 gap-2 font-medium border-b pb-2">
-                    <span>Leave Type</span>
-                    <span>Deduction</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 py-1">
-                    <span>CL - First Half</span>
-                    <span className="text-red-600">-{settings.deductionMethod} day</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 py-1">
-                    <span>SL - Second Half</span>
-                    <span className="text-red-600">-{settings.deductionMethod} day</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 py-1 text-muted-foreground">
-                    <span>Available timings</span>
-                    <span>
-                      {settings.firstHalfEnabled && settings.secondHalfEnabled 
-                        ? "Both halves" 
-                        : settings.firstHalfEnabled 
-                        ? "First half only" 
-                        : "Second half only"}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            Close
           </Button>
-          <Button onClick={handleSave}>
-            Save Half-Day Policy
+          <Button type="submit" form="half-day-policy-form">
+            Save Policy
           </Button>
         </DialogFooter>
       </DialogContent>
