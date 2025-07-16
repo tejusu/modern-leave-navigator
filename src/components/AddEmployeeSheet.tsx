@@ -67,7 +67,7 @@ export function AddEmployeeSheet({ open, onOpenChange, onAddEmployee, employees 
       joiningDate: format(values.joiningDate, "yyyy-MM-dd"),
       dateOfBirth: values.dateOfBirth ? format(values.dateOfBirth, "yyyy-MM-dd") : undefined,
       phone: values.phone,
-      reportingManager: values.reportingManager,
+      reportingManager: values.reportingManager || undefined,
       workLocation: values.workLocation,
       gender: values.gender,
       address: values.address,
