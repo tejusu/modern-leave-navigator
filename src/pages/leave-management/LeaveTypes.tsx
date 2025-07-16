@@ -1,39 +1,61 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { AddLeaveTypeDialog } from "./AddLeaveTypeDialog";
 
-const initialLeaveTypes = [
-  { name: "Casual Leave", maxDays: 12, accrual: "Monthly", carryForward: true, encashment: false },
-  { name: "Sick Leave", maxDays: 10, accrual: "Yearly", carryForward: false, encashment: false },
-  { name: "Earned Leave", maxDays: 20, accrual: "Monthly", carryForward: true, encashment: true },
+interface LeaveType {
+  name: string;
+  maxDays: number;
+  accrual: "Monthly" | "Yearly" | "Manual";
+  carryForward: boolean;
+  noticePeriod: number;
+  categoryApplicability: string[];
+}
+
+const initialLeaveTypes: LeaveType[] = [
+  { 
+    name: "Casual Leave", 
+    maxDays: 12, 
+    accrual: "Monthly", 
+    carryForward: true, 
+    noticePeriod: 3,
+    categoryApplicability: ["full-time", "part-time"]
+  },
+  { 
+    name: "Sick Leave", 
+    maxDays: 10, 
+    accrual: "Yearly", 
+    carryForward: false, 
+    noticePeriod: 0,
+    categoryApplicability: ["full-time", "part-time", "contractor", "intern"]
+  },
+  { 
+    name: "Earned Leave", 
+    maxDays: 20, 
+    accrual: "Monthly", 
+    carryForward: true, 
+    noticePeriod: 15,
+    categoryApplicability: ["full-time"]
+  },
 ];
 
-export function LeaveTypes() {
-  const [leaveTypes, setLeaveTypes] = useState(initialLeaveTypes);
+const categoryLabels: Record<string, string> = {
+  "full-time": "Full-time",
+  "part-time": "Part-time",
+  "contractor": "Contractor",
+  "intern": "Intern",
+};
 
-  const handleAddLeaveType = (newType: {
-    name?: string;
-    maxDays?: number;
-    accrual?: "Monthly" | "Yearly";
-    carryForward?: boolean;
-    encashment?: boolean;
-  }) => {
-    if (newType.name && typeof newType.maxDays === "number" && newType.accrual) {
-      setLeaveTypes((prev) => [
-        ...prev,
-        {
-          name: newType.name,
-          maxDays: newType.maxDays,
-          accrual: newType.accrual,
-          carryForward: !!newType.carryForward,
-          encashment: !!newType.encashment,
-        },
-      ]);
-    }
+export function LeaveTypes() {
+  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>(initialLeaveTypes);
+
+  const handleAddLeaveType = (newType: LeaveType) => {
+    setLeaveTypes((prev) => [...prev, newType]);
   };
 
   return (
@@ -55,7 +77,8 @@ export function LeaveTypes() {
               <TableHead className="hidden sm:table-cell">Max Days/Year</TableHead>
               <TableHead className="hidden md:table-cell">Accrual Logic</TableHead>
               <TableHead className="hidden lg:table-cell">Carry Forward</TableHead>
-              <TableHead className="hidden lg:table-cell">Encashment</TableHead>
+              <TableHead className="hidden lg:table-cell">Notice Period</TableHead>
+              <TableHead className="hidden xl:table-cell">Category</TableHead>
               <TableHead><span className="sr-only">Actions</span></TableHead>
             </TableRow>
           </TableHeader>
@@ -66,7 +89,16 @@ export function LeaveTypes() {
                 <TableCell className="hidden sm:table-cell">{type.maxDays}</TableCell>
                 <TableCell className="hidden md:table-cell">{type.accrual}</TableCell>
                 <TableCell className="hidden lg:table-cell">{type.carryForward ? "Yes" : "No"}</TableCell>
-                <TableCell className="hidden lg:table-cell">{type.encashment ? "Yes" : "No"}</TableCell>
+                <TableCell className="hidden lg:table-cell">{type.noticePeriod} days</TableCell>
+                <TableCell className="hidden xl:table-cell">
+                  <div className="flex flex-wrap gap-1">
+                    {type.categoryApplicability.map((category) => (
+                      <Badge key={category} variant="secondary" className="text-xs">
+                        {categoryLabels[category]}
+                      </Badge>
+                    ))}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
