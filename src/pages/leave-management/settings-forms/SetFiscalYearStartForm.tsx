@@ -44,7 +44,7 @@ export function SetFiscalYearStartForm({ onSave }: { onSave: () => void }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Start Month</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select the start month for the fiscal year" />

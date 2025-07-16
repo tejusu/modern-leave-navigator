@@ -65,7 +65,7 @@ export function AddLeaveTypeDialog({ onSave }: AddLeaveTypeDialogProps) {
     resolver: zodResolver(leaveTypeSchema),
     defaultValues: {
       name: "",
-      maxDays: 0,
+      maxDays: 1,
       accrual: "Monthly",
       carryForward: false,
       noticePeriod: 0,
@@ -133,7 +133,7 @@ export function AddLeaveTypeDialog({ onSave }: AddLeaveTypeDialogProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Accrual Logic</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select accrual logic" />

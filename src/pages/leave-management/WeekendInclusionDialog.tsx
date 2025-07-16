@@ -125,7 +125,7 @@ export function WeekendInclusionDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Apply weekend inclusion to</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select weekend days" />
