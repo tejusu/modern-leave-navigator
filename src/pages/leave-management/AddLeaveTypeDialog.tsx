@@ -49,8 +49,27 @@ const leaveTypeSchema = z.object({
     required_error: "Please select an accrual logic",
   }),
   carryForward: z.boolean().default(false),
+  carryForwardMaxDays: z.coerce.number().int().min(0, "Carry forward days must be 0 or more").optional(),
+  encashable: z.boolean().default(false),
+  encashmentLimit: z.coerce.number().int().min(0, "Encashment limit must be 0 or more").optional(),
   noticePeriod: z.coerce.number().int().min(0, "Notice period must be 0 or more days"),
   categoryApplicability: z.array(z.string()).min(1, "Please select at least one category"),
+}).refine((data) => {
+  if (data.carryForward && !data.carryForwardMaxDays) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Carry forward max days is required when carry forward is enabled",
+  path: ["carryForwardMaxDays"],
+}).refine((data) => {
+  if (data.encashable && !data.encashmentLimit) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Encashment limit is required when encashable is enabled",
+  path: ["encashmentLimit"],
 });
 
 type LeaveTypeFormValues = z.infer<typeof leaveTypeSchema>;
@@ -68,10 +87,16 @@ export function AddLeaveTypeDialog({ onSave }: AddLeaveTypeDialogProps) {
       maxDays: 1,
       accrual: "Monthly",
       carryForward: false,
+      carryForwardMaxDays: 0,
+      encashable: false,
+      encashmentLimit: 0,
       noticePeriod: 0,
       categoryApplicability: [],
     },
   });
+
+  const watchCarryForward = form.watch("carryForward");
+  const watchEncashable = form.watch("encashable");
 
   function onSubmit(data: LeaveTypeFormValues) {
     onSave(data);
@@ -88,104 +113,168 @@ export function AddLeaveTypeDialog({ onSave }: AddLeaveTypeDialogProps) {
           Add Leave Type
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Add New Leave Type</DialogTitle>
           <DialogDescription>
-            Define a new leave type available to employees.
+            Define a new leave type available to employees with all necessary configurations.
           </DialogDescription>
         </DialogHeader>
         
         <div className="flex-1 overflow-y-auto">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Leave Type Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Maternity Leave" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="maxDays"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Max Days per Year</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 26" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="accrual"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Accrual Logic</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select accrual logic" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Monthly">Monthly</SelectItem>
-                        <SelectItem value="Yearly">Yearly</SelectItem>
-                        <SelectItem value="Manual">Manual</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="carryForward"
+                  name="name"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between w-full">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">Carry Forward</FormLabel>
-                        <FormDescription>
-                          Allow unused leave to be carried over to the next year.
-                        </FormDescription>
-                      </div>
+                    <FormItem>
+                      <FormLabel>Leave Type Name</FormLabel>
                       <FormControl>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Input placeholder="e.g., Earned Leave, Wellness Leave, Maternity Leave" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="maxDays"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Max Days per Year</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 10, 6, 26" {...field} />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="noticePeriod"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Notice Period (Days)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 30" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Number of days in advance employees must request this leave type.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="accrual"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Accrual Logic</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select accrual logic" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Monthly">Monthly</SelectItem>
+                          <SelectItem value="Yearly">Yearly</SelectItem>
+                          <SelectItem value="Manual">Manual</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="noticePeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notice Period (Days)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 3, 7, 30" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Number of days in advance employees must request this leave type.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <FormField
+                    control={form.control}
+                    name="carryForward"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between w-full">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Carry Forward</FormLabel>
+                          <FormDescription>
+                            Allow unused leave to be carried over to the next year.
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {watchCarryForward && (
+                  <FormField
+                    control={form.control}
+                    name="carryForwardMaxDays"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Max Carry Forward Days</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="e.g., 5, 10, 15" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Maximum number of days that can be carried forward.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
+
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <FormField
+                    control={form.control}
+                    name="encashable"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between w-full">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-base">Encashable</FormLabel>
+                          <FormDescription>
+                            Allow employees to encash unused leave days.
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {watchEncashable && (
+                  <FormField
+                    control={form.control}
+                    name="encashmentLimit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Encashment Limit (Days)</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="e.g., 5, 10, 15" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Maximum number of days that can be encashed in a year.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </div>
 
               <FormField
                 control={form.control}
@@ -245,7 +334,7 @@ export function AddLeaveTypeDialog({ onSave }: AddLeaveTypeDialogProps) {
                 </Button>
                 <Button type="submit">
                   <Check className="h-4 w-4" />
-                  Save
+                  Create Leave Type
                 </Button>
               </DialogFooter>
             </form>
