@@ -1,71 +1,103 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Edit, Power, Users, Building } from "lucide-react";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Edit, Power, Users, Building, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { AddLeaveTypeDialog } from "./AddLeaveTypeDialog";
+import { toast } from "sonner";
 
 interface LeaveType {
   name: string;
+  description?: string;
+  paidType: "Paid" | "Unpaid";
   maxDays: number;
-  accrual: "Monthly" | "Yearly" | "Manual";
+  entitlementUnit: "Days" | "Weeks";
+  entitlementPeriod: "Annual" | "Bi-Annual" | "Monthly" | "One-Time";
+  accrual?: number;
+  accrualPeriod?: "Monthly" | "Yearly";
+  minimumService?: number;
+  genderEligibility: "All" | "Male" | "Female";
   carryForward: boolean;
   carryForwardMaxDays?: number;
   encashable: boolean;
-  encashmentLimit?: number;
+  maxEncashmentDays?: number;
   noticePeriod: number;
-  categoryApplicability: string[];
   isActive: boolean;
 }
 
 const initialLeaveTypes: LeaveType[] = [
   { 
-    name: "Casual Leave", 
+    name: "Casual Leave",
+    description: "Short-term leave for personal matters",
+    paidType: "Paid",
     maxDays: 12, 
-    accrual: "Monthly", 
+    entitlementUnit: "Days",
+    entitlementPeriod: "Annual",
+    accrual: 1,
+    accrualPeriod: "Monthly",
+    minimumService: 0,
+    genderEligibility: "All",
     carryForward: true,
     carryForwardMaxDays: 5,
     encashable: false,
     noticePeriod: 3,
-    categoryApplicability: ["full-time", "part-time"],
     isActive: true
   },
   { 
-    name: "Sick Leave", 
-    maxDays: 10, 
-    accrual: "Yearly", 
+    name: "Sick Leave",
+    description: "Medical leave for health issues",
+    paidType: "Paid", 
+    maxDays: 10,
+    entitlementUnit: "Days",
+    entitlementPeriod: "Annual",
+    accrual: 0.83,
+    accrualPeriod: "Monthly",
+    minimumService: 0,
+    genderEligibility: "All",
     carryForward: false,
     encashable: false,
     noticePeriod: 0,
-    categoryApplicability: ["full-time", "part-time", "contractor", "intern"],
     isActive: true
   },
   { 
-    name: "Earned Leave", 
-    maxDays: 20, 
-    accrual: "Monthly", 
+    name: "Earned Leave",
+    description: "Annual planned leave",
+    paidType: "Paid",
+    maxDays: 20,
+    entitlementUnit: "Days",
+    entitlementPeriod: "Annual",
+    accrual: 1.67,
+    accrualPeriod: "Monthly",
+    minimumService: 3,
+    genderEligibility: "All",
     carryForward: true,
     carryForwardMaxDays: 10,
     encashable: true,
-    encashmentLimit: 15,
+    maxEncashmentDays: 10,
     noticePeriod: 15,
-    categoryApplicability: ["full-time"],
     isActive: true
   },
 ];
 
-const categoryLabels: Record<string, string> = {
-  "full-time": "Full-time",
-  "part-time": "Part-time",
-  "contractor": "Contractor",
-  "intern": "Intern",
-};
-
 export function LeaveTypes() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>(initialLeaveTypes);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    open: boolean;
+    leaveTypeName: string;
+  }>({ open: false, leaveTypeName: "" });
 
   const handleAddLeaveType = (newType: Omit<LeaveType, 'isActive'>) => {
     setLeaveTypes((prev) => [...prev, { ...newType, isActive: true }]);
@@ -79,6 +111,21 @@ export function LeaveTypes() {
           : type
       )
     );
+    
+    const type = leaveTypes.find(t => t.name === typeName);
+    if (type) {
+      toast.success(`Leave type "${typeName}" ${type.isActive ? 'deactivated' : 'activated'} successfully.`);
+    }
+  };
+
+  const handleDeleteLeaveType = (typeName: string) => {
+    setDeleteConfirmation({ open: true, leaveTypeName: typeName });
+  };
+
+  const confirmDelete = () => {
+    setLeaveTypes((prev) => prev.filter(type => type.name !== deleteConfirmation.leaveTypeName));
+    toast.success(`Leave type "${deleteConfirmation.leaveTypeName}" deleted successfully.`);
+    setDeleteConfirmation({ open: false, leaveTypeName: "" });
   };
 
   return (
@@ -98,12 +145,12 @@ export function LeaveTypes() {
             <TableHeader>
               <TableRow>
                 <TableHead>Type Name</TableHead>
-                <TableHead className="hidden sm:table-cell">Max Days/Year</TableHead>
-                <TableHead className="hidden md:table-cell">Accrual</TableHead>
+                <TableHead className="hidden sm:table-cell">Type</TableHead>
+                <TableHead className="hidden md:table-cell">Max Days/Year</TableHead>
                 <TableHead className="hidden lg:table-cell">Carry Forward</TableHead>
                 <TableHead className="hidden lg:table-cell">Encashable</TableHead>
                 <TableHead className="hidden lg:table-cell">Notice Period</TableHead>
-                <TableHead className="hidden xl:table-cell">Category</TableHead>
+                <TableHead className="hidden xl:table-cell">Gender</TableHead>
                 <TableHead className="hidden xl:table-cell">Status</TableHead>
                 <TableHead><span className="sr-only">Actions</span></TableHead>
               </TableRow>
@@ -111,9 +158,25 @@ export function LeaveTypes() {
             <TableBody>
               {leaveTypes.map((type) => (
                 <TableRow key={type.name} className={!type.isActive ? "opacity-60" : ""}>
-                  <TableCell className="font-medium">{type.name}</TableCell>
-                  <TableCell className="hidden sm:table-cell">{type.maxDays}</TableCell>
-                  <TableCell className="hidden md:table-cell">{type.accrual}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex flex-col">
+                      <span>{type.name}</span>
+                      {type.description && (
+                        <span className="text-xs text-muted-foreground">{type.description}</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    <Badge variant={type.paidType === "Paid" ? "default" : "secondary"}>
+                      {type.paidType}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    <div className="flex flex-col">
+                      <span>{type.maxDays} {type.entitlementUnit}</span>
+                      <span className="text-xs text-muted-foreground">{type.entitlementPeriod}</span>
+                    </div>
+                  </TableCell>
                   <TableCell className="hidden lg:table-cell">
                     {type.carryForward ? (
                       <div className="flex flex-col">
@@ -132,9 +195,9 @@ export function LeaveTypes() {
                     {type.encashable ? (
                       <div className="flex flex-col">
                         <span className="text-green-600">Yes</span>
-                        {type.encashmentLimit && (
+                        {type.maxEncashmentDays && (
                           <span className="text-xs text-muted-foreground">
-                            Limit: {type.encashmentLimit} days
+                            Max: {type.maxEncashmentDays} days
                           </span>
                         )}
                       </div>
@@ -144,13 +207,9 @@ export function LeaveTypes() {
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">{type.noticePeriod} days</TableCell>
                   <TableCell className="hidden xl:table-cell">
-                    <div className="flex flex-wrap gap-1">
-                      {type.categoryApplicability.map((category) => (
-                        <Badge key={category} variant="secondary" className="text-xs">
-                          {categoryLabels[category]}
-                        </Badge>
-                      ))}
-                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {type.genderEligibility}
+                    </Badge>
                   </TableCell>
                   <TableCell className="hidden xl:table-cell">
                     <Badge variant={type.isActive ? "default" : "secondary"}>
@@ -174,6 +233,7 @@ export function LeaveTypes() {
                           <Power className="mr-2 h-4 w-4" />
                           {type.isActive ? "Deactivate" : "Activate"}
                         </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <Users className="mr-2 h-4 w-4" />
                           Map to Roles
@@ -181,6 +241,14 @@ export function LeaveTypes() {
                         <DropdownMenuItem>
                           <Building className="mr-2 h-4 w-4" />
                           Map to Departments
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={() => handleDeleteLeaveType(type.name)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -191,6 +259,27 @@ export function LeaveTypes() {
           </Table>
         </div>
       </CardContent>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteConfirmation.open} onOpenChange={(open) => setDeleteConfirmation(prev => ({ ...prev, open }))}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete the leave type "{deleteConfirmation.leaveTypeName}"? 
+              This action cannot be undone and will affect all related leave applications.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteConfirmation({ open: false, leaveTypeName: "" })}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete Leave Type
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }
