@@ -298,7 +298,25 @@ export function LeaveApprovalWorkflowDialog({
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <h4 className="text-sm font-medium">Approval Chain</h4>
-                          <Badge variant="outline">{fields.length} Level{fields.length > 1 ? 's' : ''}</Badge>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{fields.length} Level{fields.length > 1 ? 's' : ''}</Badge>
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => append({ 
+                                name: `Level ${fields.length + 1}`, 
+                                approver: "reporting-manager", 
+                                escalationDays: 3, 
+                                mandatoryApproval: true,
+                                allowDelegation: false 
+                              })}
+                              className="h-8"
+                            >
+                              <Plus className="h-3 w-3 mr-1" />
+                              Add Approver Level
+                            </Button>
+                          </div>
                         </div>
                         
                         {fields.map((field, index) => (
